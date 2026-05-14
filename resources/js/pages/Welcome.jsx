@@ -1,10 +1,10 @@
 import DeliveryForm from '@/Components/DeliveryForm';
 import GuestLayout from '@/Layouts/GuestLayout';
 
-export default function Welcome({ cities }) {
+export default function Welcome() {
     return (
         <>
-            <DeliveryForm cities={cities} />
+            <DeliveryForm />
         </>
     );
 }

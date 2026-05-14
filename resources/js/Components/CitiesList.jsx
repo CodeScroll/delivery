@@ -1,13 +1,17 @@
-import { constTrans } from '@/api';
-import { useState } from 'react';
+import { constTrans, fetchSource } from '@/api';
+import { useEffect, useState } from 'react';
 
-export default function CitiesList({cities}) {
-    console.log(cities)
+export default function CitiesList() {
+    const [cities, setCities] = useState([]);
     const [selectedCity, setSelectedCity] = useState(null);
 
     const citySelected = (city) => {
         setSelectedCity(city);
         console.log('City selected:', city);
+    };
+
+    const clearSelectedCity = () => {
+        setSelectedCity(null);
     };
 
     const transes = {
@@ -18,31 +22,18 @@ export default function CitiesList({cities}) {
         },
     };
 
-    const clearSelectedCity = () => {
-        setSelectedCity(null);
-    };
+    useEffect(() => {
+        fetchSource('/api/cities')
+            .then((data) => {
+                setCities(data);
+            })
+            .catch(console.error);
+    }, []);
 
     return (
         <div className="flex min-h-screen bg-slate-950 p-8 font-mono">
             <div className="flex w-full gap-6">
                 <div className="w-full rounded-lg bg-slate-900 p-6 text-white">
-                    {selectedCity && (
-                        <div
-                            onClick={clearSelectedCity}
-                            className="group flex w-fit cursor-pointer items-center gap-2 text-slate-400 transition-colors duration-150 hover:text-white"
-                        >
-                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-800 transition-colors duration-150 group-hover:bg-slate-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            </div>
-                            <span className="text-xs tracking-wide">{constTrans(transes, 'allcities')}</span>
-                        </div>
-                    )}
                     <div className="text-center">
                         <h2 className="mb-1 text-xs uppercase tracking-[0.3em] text-slate-500">{constTrans(transes, 'cities')}</h2>
                         <h1 className="text-2xl font-bold tracking-tight text-white">{constTrans(transes, 'selectcity')}</h1>
@@ -78,9 +69,32 @@ export default function CitiesList({cities}) {
                         </ul>
                     </div>
 
-                    <div className={`text-center text-xs transition-all duration-300 ${selectedCity ? 'opacity-100' : 'opacity-0'}`}>
+                    <div
+                        className={`flex w-full justify-center py-4 text-xs transition-all duration-300 ${selectedCity ? 'opacity-100' : 'opacity-0'}`}
+                    >
                         <span className="text-slate-500">{ti8c('selected_h')}: </span>
                         <span className="font-semibold text-indigo-400">{selectedCity?.name}</span>
+                        {selectedCity && (
+                            <button
+                                onClick={clearSelectedCity}
+                                className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-white/40"
+                                aria-label="Clear selected city"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-3 w-3 text-white"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

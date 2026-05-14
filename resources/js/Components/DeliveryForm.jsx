@@ -6,7 +6,7 @@ import Modal from './Modal';
 
 const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Toys'];
 
-export default function DeliveryForm({cities}) {
+export default function DeliveryForm() {
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchValue, setSearchValue] = useState('');
     const [selectedCity, setSelectedCity] = useState('Δράμα');
@@ -124,7 +124,7 @@ export default function DeliveryForm({cities}) {
                 }}
                 maxWidth={'7xl'}
             >
-                <CitiesList cities={cities} />
+                <CitiesList />
             </Modal>
         </>
     );
