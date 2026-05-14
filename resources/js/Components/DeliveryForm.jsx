@@ -1,13 +1,20 @@
 import { constTrans } from '@/api';
 import { useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
+import CitiesList from './CitiesList';
+import Modal from './Modal';
 
 const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Toys'];
 
-export default function DeliveryForm() {
+export default function DeliveryForm({cities}) {
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchValue, setSearchValue] = useState('');
     const [selectedCity, setSelectedCity] = useState('Δράμα');
+    const [selectCityModal, setSelectCityModal] = useState(false);
+
+    const selectingCity = () => {
+        setSelectCityModal(true);
+    };
 
     function categorySelecting(category) {
         setActiveCategory(category);
@@ -32,83 +39,94 @@ export default function DeliveryForm() {
     };
 
     return (
-        <div style={styles.wrapper}>
-            <div style={styles.header}>
-                <div className="flex items-center gap-1">
-                    <span style={styles.textLabel}>{ti8c('city')}:</span>
+        <>
+            <div style={styles.wrapper}>
+                <div style={styles.header}>
+                    <div className="flex items-center gap-1">
+                        <span style={styles.textLabel}>{ti8c('city')}:</span>
 
-                    <span className="font-semibold">{selectedCity}</span>
+                        <span className="font-semibold">{selectedCity}</span>
 
-                    <FaExchangeAlt className="text-sm cursor-pointer" />
+                        <FaExchangeAlt className="cursor-pointer text-sm" onClick={selectingCity} />
+                    </div>
+                    <h1 style={styles.title}>
+                        {constTrans(transes, 'setnextdel')}
+                        <br />
+                        {ti8c('delivery')}
+                    </h1>
                 </div>
-                <h1 style={styles.title}>
-                    {constTrans(transes, 'setnextdel')}
-                    <br />
-                    {ti8c('delivery')}
-                </h1>
-            </div>
-            <div style={styles.categorySection}>
-                <p style={styles.textLabel}>{constTrans(transes, 'bycategory')}</p>
-                <div style={styles.categoryList} role="list">
-                    {CATEGORIES.map((cat, i) => {
-                        const isActive = activeCategory === cat;
-                        return (
-                            <span key={cat} style={styles.categoryItem} role="listitem">
-                                <button
-                                    onClick={() => categorySelecting(cat)}
-                                    style={{
-                                        ...styles.categoryText,
-                                        ...(isActive ? styles.categoryTextActive : {}),
-                                    }}
-                                    aria-pressed={isActive}
-                                >
-                                    {cat}
-                                </button>
-                                {i < CATEGORIES.length - 1 && <span style={styles.divider} aria-hidden="true" />}
-                            </span>
-                        );
-                    })}
+                <div style={styles.categorySection}>
+                    <p style={styles.textLabel}>{constTrans(transes, 'bycategory')}</p>
+                    <div style={styles.categoryList} role="list">
+                        {CATEGORIES.map((cat, i) => {
+                            const isActive = activeCategory === cat;
+                            return (
+                                <span key={cat} style={styles.categoryItem} role="listitem">
+                                    <button
+                                        onClick={() => categorySelecting(cat)}
+                                        style={{
+                                            ...styles.categoryText,
+                                            ...(isActive ? styles.categoryTextActive : {}),
+                                        }}
+                                        aria-pressed={isActive}
+                                    >
+                                        {cat}
+                                    </button>
+                                    {i < CATEGORIES.length - 1 && <span style={styles.divider} aria-hidden="true" />}
+                                </span>
+                            );
+                        })}
+                    </div>
                 </div>
-            </div>
-            <div style={styles.searchRow}>
-                <div style={styles.searchBox}>
-                    <svg
-                        style={styles.searchIcon}
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                    <input
-                        type="text"
-                        placeholder="Search products…"
-                        value={searchValue}
-                        onChange={handleSearchChange}
-                        style={styles.input}
-                        aria-label="Search products"
-                    />
-                    {searchValue && (
-                        <button
-                            style={styles.clearBtn}
-                            onClick={() => {
-                                setSearchValue('');
-                                searchingProduct('');
-                            }}
-                            aria-label="Clear search"
+                <div style={styles.searchRow}>
+                    <div style={styles.searchBox}>
+                        <svg
+                            style={styles.searchIcon}
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
                         >
-                            ×
-                        </button>
-                    )}
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input
+                            type="text"
+                            placeholder="Search products…"
+                            value={searchValue}
+                            onChange={handleSearchChange}
+                            style={styles.input}
+                            aria-label="Search products"
+                        />
+                        {searchValue && (
+                            <button
+                                style={styles.clearBtn}
+                                onClick={() => {
+                                    setSearchValue('');
+                                    searchingProduct('');
+                                }}
+                                aria-label="Clear search"
+                            >
+                                ×
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+            <Modal
+                show={selectCityModal}
+                onClose={() => {
+                    setSelectCityModal(false);
+                }}
+                maxWidth={'7xl'}
+            >
+                <CitiesList cities={cities} />
+            </Modal>
+        </>
     );
 }
 

@@ -1,17 +1,6 @@
-import {
-    Dialog,
-    DialogPanel,
-    Transition,
-    TransitionChild,
-} from '@headlessui/react';
+import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 
-export default function Modal({
-    children,
-    show = false,
-    maxWidth = '2xl',
-    closeable = true,
-    onClose = () => {},
-}) {
+export default function Modal({ children, show = false, maxWidth = '2xl', closeable = true, onClose = () => {} }) {
     const close = () => {
         if (closeable) {
             onClose();
@@ -24,6 +13,17 @@ export default function Modal({
         lg: 'sm:max-w-lg',
         xl: 'sm:max-w-xl',
         '2xl': 'sm:max-w-2xl',
+
+        // larger sizes
+        '3xl': 'sm:max-w-3xl',
+        '4xl': 'sm:max-w-4xl',
+        '5xl': 'sm:max-w-5xl',
+        '6xl': 'sm:max-w-6xl',
+        '7xl': 'sm:max-w-7xl',
+
+        // special useful widths
+        full: 'sm:max-w-full',
+        screen: 'sm:max-w-screen-xl',
     }[maxWidth];
 
     return (
@@ -57,6 +57,16 @@ export default function Modal({
                         className={`mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full ${maxWidthClass}`}
                     >
                         {children}
+                        {closeable && (
+                            <div className="mt-6 flex justify-end">
+                                <button
+                                    onClick={close}
+                                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                                >
+                                    {ti8c('close')}
+                                </button>
+                            </div>
+                        )}
                     </DialogPanel>
                 </TransitionChild>
             </Dialog>

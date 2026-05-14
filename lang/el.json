@@ -1,6 +1,9 @@
 {
     "about": "σχετικά",
-    "delivery": "διανομή",
     "city": "πόλη",
-    "cities": "πόλεις"
+    "cities": "πόλεις",
+    "close": "κλείσε",
+    "delivery": "διανομή",
+    "selected_o": "επιλεγμένο",
+    "selected_h": "επιλεγμένη"
 }
