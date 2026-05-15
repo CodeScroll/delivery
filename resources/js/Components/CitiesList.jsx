@@ -1,7 +1,7 @@
 import { constTrans, fetchSource } from '@/api';
 import { useEffect, useState } from 'react';
 
-export default function CitiesList() {
+export default function CitiesList({ targetCityId = null }) {
     const [cities, setCities] = useState([]);
     const [selectedCity, setSelectedCity] = useState(null);
 
@@ -26,6 +26,15 @@ export default function CitiesList() {
         fetchSource('/api/cities')
             .then((data) => {
                 setCities(data);
+
+                if (targetCityId) {
+                    for (const city of data) {
+                        if (city.id === targetCityId) {
+                            setSelectedCity(city);
+                            break;
+                        }
+                    }
+                }
             })
             .catch(console.error);
     }, []);

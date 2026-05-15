@@ -11,7 +11,9 @@ class CityController extends Controller
     public function get()
     {
         return response()->json(
-            City::whereNull('parent')->get()
+            City::whereNull('parent')
+                ->orderBy('name')
+                ->get()
         );
     }
 }

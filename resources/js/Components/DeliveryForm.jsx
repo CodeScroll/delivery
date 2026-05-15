@@ -9,7 +9,8 @@ const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Books', 'Home & Garden', 
 export default function DeliveryForm() {
     const [activeCategory, setActiveCategory] = useState('All');
     const [searchValue, setSearchValue] = useState('');
-    const [selectedCity, setSelectedCity] = useState('Δράμα');
+    const [targetCityName, setTargetCityName] = useState('Δράμα');
+    const [targetCityId, setTargetCityId] = useState(54);
     const [selectCityModal, setSelectCityModal] = useState(false);
 
     const selectingCity = () => {
@@ -45,7 +46,7 @@ export default function DeliveryForm() {
                     <div className="flex items-center gap-1">
                         <span style={styles.textLabel}>{ti8c('city')}:</span>
 
-                        <span className="font-semibold">{selectedCity}</span>
+                        <span className="font-semibold">{targetCityName}</span>
 
                         <FaExchangeAlt className="cursor-pointer text-sm" onClick={selectingCity} />
                     </div>
@@ -124,7 +125,7 @@ export default function DeliveryForm() {
                 }}
                 maxWidth={'7xl'}
             >
-                <CitiesList />
+                <CitiesList targetCityId={targetCityId} />
             </Modal>
         </>
     );
