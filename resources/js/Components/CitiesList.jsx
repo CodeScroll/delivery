@@ -1,4 +1,4 @@
-import { constTrans, fetchSource } from '@/api';
+import { constTrans, fetchSource, handleAjaxError } from '@/api';
 import { useEffect, useState } from 'react';
 
 export default function CitiesList({ targetCityId = null }) {
@@ -36,7 +36,7 @@ export default function CitiesList({ targetCityId = null }) {
                     }
                 }
             })
-            .catch(console.error);
+            .catch(handleAjaxError);
     }, []);
 
     return (

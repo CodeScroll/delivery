@@ -1,13 +1,12 @@
-import { constTrans } from '@/api';
-import { useState } from 'react';
+import { constTrans, fetchSource } from '@/api';
+import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
 import Modal from './Modal';
 
-const CATEGORIES = ['All', 'Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Toys'];
-
 export default function DeliveryForm() {
     const [activeCategory, setActiveCategory] = useState('All');
+    const [categoriesList, setCategoriesList] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [targetCityName, setTargetCityName] = useState('Δράμα');
     const [targetCityId, setTargetCityId] = useState(54);
@@ -39,6 +38,15 @@ export default function DeliveryForm() {
         },
     };
 
+    useEffect(() => {
+        fetchSource('/api/categories')
+            .then((data) => {
+                console.log('data', data);
+                setCategoriesList(data);
+            })
+            .catch(console.error);
+    }, []);
+
     return (
         <>
             <div style={styles.wrapper}>
@@ -58,26 +66,29 @@ export default function DeliveryForm() {
                 </div>
                 <div style={styles.categorySection}>
                     <p style={styles.textLabel}>{constTrans(transes, 'bycategory')}</p>
-                    <div style={styles.categoryList} role="list">
-                        {CATEGORIES.map((cat, i) => {
-                            const isActive = activeCategory === cat;
-                            return (
-                                <span key={cat} style={styles.categoryItem} role="listitem">
-                                    <button
-                                        onClick={() => categorySelecting(cat)}
-                                        style={{
-                                            ...styles.categoryText,
-                                            ...(isActive ? styles.categoryTextActive : {}),
-                                        }}
-                                        aria-pressed={isActive}
-                                    >
-                                        {cat}
-                                    </button>
-                                    {i < CATEGORIES.length - 1 && <span style={styles.divider} aria-hidden="true" />}
-                                </span>
-                            );
-                        })}
-                    </div>
+                    {categoriesList?.length > 0 && (
+                        <div style={styles.categoryList} role="list">
+                            {categoriesList.map((cat, i) => {
+                                const isActive = activeCategory === cat.name;
+                                return (
+                                    <span key={cat.id} style={styles.categoryItem} role="listitem">
+                                        <button
+                                            onClick={() => categorySelecting(cat)}
+                                            style={{
+                                                ...styles.categoryText,
+                                                ...(isActive ? styles.categoryTextActive : {}),
+                                            }}
+                                            aria-pressed={isActive}
+                                        >
+                                            {cat.name}
+                                        </button>
+
+                                        {i < categoriesList.length - 1 && <span style={styles.divider} aria-hidden="true" />}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
                 <div style={styles.searchRow}>
                     <div style={styles.searchBox}>
@@ -118,15 +129,17 @@ export default function DeliveryForm() {
                     </div>
                 </div>
             </div>
-            <Modal
-                show={selectCityModal}
-                onClose={() => {
-                    setSelectCityModal(false);
-                }}
-                maxWidth={'7xl'}
-            >
-                <CitiesList targetCityId={targetCityId} />
-            </Modal>
+            {targetCityId && (
+                <Modal
+                    show={selectCityModal}
+                    onClose={() => {
+                        setSelectCityModal(false);
+                    }}
+                    maxWidth="7xl"
+                >
+                    <CitiesList targetCityId={targetCityId} />
+                </Modal>
+            )}
         </>
     );
 }

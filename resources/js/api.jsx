@@ -29,3 +29,7 @@ export async function fetchSource(url, options = {}) {
         throw error;
     }
 }
+
+export function handleAjaxError (error) {
+    console.error('handleAjaxError', error);
+};
