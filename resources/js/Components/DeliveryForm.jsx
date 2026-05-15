@@ -4,12 +4,12 @@ import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
 import Modal from './Modal';
 
-export default function DeliveryForm() {
-    const [activeCategory, setActiveCategory] = useState('All');
+export default function DeliveryForm({ targetCity = null }) {
+    const [activeCategory, setActiveCategory] = useState(0);
     const [categoriesList, setCategoriesList] = useState([]);
     const [searchValue, setSearchValue] = useState('');
-    const [targetCityName, setTargetCityName] = useState('Δράμα');
-    const [targetCityId, setTargetCityId] = useState(54);
+    const [targetCityName, setTargetCityName] = useState(targetCity ? targetCity.name : null);
+    const [targetCityId, setTargetCityId] = useState(targetCity ? targetCity.id : null);
     const [selectCityModal, setSelectCityModal] = useState(false);
 
     const selectingCity = () => {
@@ -17,8 +17,12 @@ export default function DeliveryForm() {
     };
 
     function categorySelecting(category) {
-        setActiveCategory(category);
-        console.log('Category selected:', category);
+        if (activeCategory == category.id) {
+            setActiveCategory(0);
+        } else {
+            setActiveCategory(category.id);
+            console.log('Category selected:', category);
+        }
     }
 
     function searchingProduct(value) {
@@ -41,7 +45,6 @@ export default function DeliveryForm() {
     useEffect(() => {
         fetchSource('/api/categories')
             .then((data) => {
-                console.log('data', data);
                 setCategoriesList(data);
             })
             .catch(console.error);
@@ -69,21 +72,20 @@ export default function DeliveryForm() {
                     {categoriesList?.length > 0 && (
                         <div style={styles.categoryList} role="list">
                             {categoriesList.map((cat, i) => {
-                                const isActive = activeCategory === cat.name;
+                                const isActive = activeCategory === cat.id;
                                 return (
-                                    <span key={cat.id} style={styles.categoryItem} role="listitem">
+                                    <span key={cat.id} role="listitem" className="flex items-center">
                                         <button
                                             onClick={() => categorySelecting(cat)}
-                                            style={{
-                                                ...styles.categoryText,
-                                                ...(isActive ? styles.categoryTextActive : {}),
-                                            }}
+                                            className={`cursor-pointer border-0 bg-transparent px-3 py-[2px] font-mono text-[13px] tracking-wider transition-colors duration-150 hover:text-black ${isActive ? 'font-bold text-[#1a1510]' : 'text-[#9a8c7e]'}`}
                                             aria-pressed={isActive}
                                         >
                                             {cat.name}
                                         </button>
 
-                                        {i < categoriesList.length - 1 && <span style={styles.divider} aria-hidden="true" />}
+                                        {i < categoriesList.length - 1 && (
+                                            <span className="inline-block h-[13px] w-px shrink-0 bg-[#c8bfb5]" aria-hidden="true" />
+                                        )}
                                     </span>
                                 );
                             })}
@@ -228,31 +230,5 @@ const styles = {
         flexWrap: 'wrap',
         alignItems: 'center',
         gap: 0,
-    },
-    categoryItem: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-    categoryText: {
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        fontSize: 13,
-        fontFamily: "'Courier New', monospace",
-        letterSpacing: '0.05em',
-        color: '#9a8c7e',
-        padding: '2px 12px',
-        transition: 'color 0.15s',
-    },
-    categoryTextActive: {
-        color: '#1a1510',
-        fontWeight: 700,
-    },
-    divider: {
-        display: 'inline-block',
-        width: 1,
-        height: 13,
-        background: '#c8bfb5',
-        flexShrink: 0,
     },
 };
