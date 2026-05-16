@@ -7,6 +7,7 @@ import Modal from './Modal';
 export default function DeliveryForm({ targetCity = null }) {
     const [activeCategory, setActiveCategory] = useState(0);
     const [categoriesList, setCategoriesList] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [searchValue, setSearchValue] = useState('');
     const [targetCityName, setTargetCityName] = useState(targetCity ? targetCity.name : null);
     const [targetCityId, setTargetCityId] = useState(targetCity ? targetCity.id : null);
@@ -16,12 +17,18 @@ export default function DeliveryForm({ targetCity = null }) {
         setSelectCityModal(true);
     };
 
+    const clearSelectedCategory = () => {
+        setActiveCategory(0);
+        setSelectedCategory(null);
+    };
+
     function categorySelecting(category) {
         if (activeCategory == category.id) {
             setActiveCategory(0);
+            setSelectedCategory(null);
         } else {
             setActiveCategory(category.id);
-            console.log('Category selected:', category);
+            setSelectedCategory(category);
         }
     }
 
@@ -89,6 +96,19 @@ export default function DeliveryForm({ targetCity = null }) {
                                     </span>
                                 );
                             })}
+                        </div>
+                    )}
+
+                    {selectedCategory && (
+                        <div className="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1.5 text-sm font-medium text-indigo-800">
+                            <span>{selectedCategory.name}</span>
+                            <button
+                                onClick={clearSelectedCategory}
+                                className="flex h-4 w-4 items-center justify-center rounded-full text-indigo-500 transition-colors hover:bg-indigo-200 hover:text-indigo-700"
+                                aria-label="Clear category"
+                            >
+                                ✕
+                            </button>
                         </div>
                     )}
                 </div>
