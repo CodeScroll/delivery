@@ -4,13 +4,14 @@ import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
 import Modal from './Modal';
 
-export default function DeliveryForm({ targetCity = null }) {
+export default function DeliveryForm({ defaultCity = null }) {
     const [activeCategory, setActiveCategory] = useState(0);
     const [categoriesList, setCategoriesList] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [searchValue, setSearchValue] = useState('');
-    const [targetCityName, setTargetCityName] = useState(targetCity ? targetCity.name : null);
-    const [targetCityId, setTargetCityId] = useState(targetCity ? targetCity.id : null);
+    const [targetCity, setTargetCity] = useState(defaultCity);
+    const [targetCityName, setTargetCityName] = useState(defaultCity ? defaultCity.name : null);
+    const [targetCityId, setTargetCityId] = useState(defaultCity ? defaultCity.id : null);
     const [selectCityModal, setSelectCityModal] = useState(false);
 
     const selectingCity = () => {
@@ -56,6 +57,13 @@ export default function DeliveryForm({ targetCity = null }) {
             })
             .catch(console.error);
     }, []);
+
+    useEffect(() => {
+        if (targetCity) {
+            setTargetCityName(targetCity.name);
+            setTargetCityId(targetCity.id);
+        }
+    }, [targetCity]);
 
     return (
         <>
@@ -151,17 +159,15 @@ export default function DeliveryForm({ targetCity = null }) {
                     </div>
                 </div>
             </div>
-            {targetCityId && (
-                <Modal
-                    show={selectCityModal}
-                    onClose={() => {
-                        setSelectCityModal(false);
-                    }}
-                    maxWidth="7xl"
-                >
-                    <CitiesList targetCityId={targetCityId} />
-                </Modal>
-            )}
+            <Modal
+                show={selectCityModal}
+                onClose={() => {
+                    setSelectCityModal(false);
+                }}
+                maxWidth="7xl"
+            >
+                <CitiesList setTargetCity={setTargetCity} targetCity={targetCity} />
+            </Modal>
         </>
     );
 }

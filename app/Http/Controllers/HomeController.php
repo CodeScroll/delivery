@@ -10,9 +10,9 @@ class HomeController extends Controller
 {
     public function indexPage()
     {
-        $targetCity = City::where('slug', 'drama')->first();
+        $defaultCity = City::where('slug', 'drama')->first();
         return Inertia::render('Welcome',[
-            'targetCity' => $targetCity,
+            'defaultCity' => $defaultCity,
         ]);
     }
 }

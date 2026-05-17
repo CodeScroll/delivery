@@ -1,12 +1,13 @@
 import { constTrans, fetchSource, handleAjaxError } from '@/api';
 import { useEffect, useState } from 'react';
 
-export default function CitiesList({ targetCityId = null }) {
+export default function CitiesList({ targetCity, setTargetCity }) {
     const [cities, setCities] = useState([]);
     const [selectedCity, setSelectedCity] = useState(null);
 
     const citySelected = (city) => {
         setSelectedCity(city);
+        setTargetCity(city);
         getCities(city.id);
     };
 
@@ -15,6 +16,7 @@ export default function CitiesList({ targetCityId = null }) {
             getCities(selectedCity.parent, true);
         } else {
             setSelectedCity(null);
+            setTargetCity(null);
             getCities();
         }
     };
@@ -23,6 +25,7 @@ export default function CitiesList({ targetCityId = null }) {
         el: {
             cities: 'Πόλεις',
             selectcity: 'Επιλογή πόλης',
+            selectedcity: 'Επιλεγμένη πόλη',
             allcities: 'Όλες οι πόλεις',
         },
     };
@@ -49,7 +52,9 @@ export default function CitiesList({ targetCityId = null }) {
                 if (data.length > 0) {
                     setCities(data);
                     if (parent) {
-                        setSelectedCity(data.find((item) => item.id === cityId));
+                        parentsCity = data.find((item) => item.id === cityId);
+                        setSelectedCity(parentsCity);
+                        setTargetCity(parentsCity);
                     }
                 }
             })
@@ -60,24 +65,19 @@ export default function CitiesList({ targetCityId = null }) {
         getCities();
     }, []);
 
-    useEffect(() => {
-        // if (cities.length > 0 && targetCityId) {
-        //     for (const city of cities) {
-        //         if (city.id === targetCityId) {
-        //             setSelectedCity(city);
-        //             break;
-        //         }
-        //     }
-        // }
-    }, [cities]);
-
     return (
         <div className="flex min-h-screen bg-slate-950 p-8 font-mono">
             <div className="flex w-full gap-6">
                 <div className="w-full rounded-lg bg-slate-900 p-6 text-white">
                     <div className="text-center">
                         <h2 className="mb-1 text-xs uppercase tracking-[0.3em] text-slate-500">{constTrans(transes, 'cities')}</h2>
-                        <h1 className="text-2xl font-bold tracking-tight text-white">{constTrans(transes, 'selectcity')}</h1>
+                        {targetCity !== null && (
+                            <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 mt-2">
+                                <span className="text-xs font-medium text-blue-500">{constTrans(transes, 'selectedcity')}</span>
+                                <span className="text-xs font-semibold text-blue-700">{targetCity.name}</span>
+                            </div>
+                        )}
+                        <h1 className="text-2xl mt-2 font-bold tracking-tight text-white">{constTrans(transes, 'selectcity')}</h1>
                     </div>
 
                     <div className="relative">
