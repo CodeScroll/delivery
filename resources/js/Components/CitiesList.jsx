@@ -7,12 +7,16 @@ export default function CitiesList({ targetCityId = null }) {
 
     const citySelected = (city) => {
         setSelectedCity(city);
-        console.log('City selected:', city);
         getCities(city.id);
     };
 
     const clearSelectedCity = () => {
-        setSelectedCity(null);
+        if (selectedCity.parent != null) {
+            getCities(selectedCity.parent, true);
+        } else {
+            setSelectedCity(null);
+            getCities();
+        }
     };
 
     const transes = {
@@ -23,13 +27,30 @@ export default function CitiesList({ targetCityId = null }) {
         },
     };
 
-    const getCities = (cityId = null) => {
-        const url = cityId != null ? `/api/cities?cityid=${cityId}` : '/api/cities';
+    const getCities = (cityId = null, parent = false) => {
+        let url = '/api/cities';
+
+        const params = new URLSearchParams();
+
+        if (cityId) {
+            params.append('cityid', cityId);
+        }
+
+        if (parent) {
+            params.append('parent', 1);
+        }
+
+        if (params.toString()) {
+            url += `?${params.toString()}`;
+        }
 
         fetchSource(url)
             .then((data) => {
                 if (data.length > 0) {
                     setCities(data);
+                    if (parent) {
+                        setSelectedCity(data.find((item) => item.id === cityId));
+                    }
                 }
             })
             .catch(handleAjaxError);
@@ -40,14 +61,14 @@ export default function CitiesList({ targetCityId = null }) {
     }, []);
 
     useEffect(() => {
-        if (cities.length > 0 && targetCityId) {
-            for (const city of cities) {
-                if (city.id === targetCityId) {
-                    setSelectedCity(city);
-                    break;
-                }
-            }
-        }
+        // if (cities.length > 0 && targetCityId) {
+        //     for (const city of cities) {
+        //         if (city.id === targetCityId) {
+        //             setSelectedCity(city);
+        //             break;
+        //         }
+        //     }
+        // }
     }, [cities]);
 
     return (
@@ -100,19 +121,34 @@ export default function CitiesList({ targetCityId = null }) {
                                 className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-colors hover:bg-white/40"
                                 aria-label="Clear selected city"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="h-3 w-3 text-white"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <line x1="18" y1="6" x2="6" y2="18" />
-                                    <line x1="6" y1="6" x2="18" y2="18" />
-                                </svg>
+                                {selectedCity.parent == null ? (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-3 w-3 text-white"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-3 w-3 text-white"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <polyline points="15 18 9 12 15 6" />
+                                    </svg>
+                                )}
                             </button>
                         )}
                     </div>
