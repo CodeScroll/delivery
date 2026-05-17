@@ -8,6 +8,7 @@ export default function CitiesList({ targetCityId = null }) {
     const citySelected = (city) => {
         setSelectedCity(city);
         console.log('City selected:', city);
+        getCities(city.id);
     };
 
     const clearSelectedCity = () => {
@@ -22,22 +23,32 @@ export default function CitiesList({ targetCityId = null }) {
         },
     };
 
-    useEffect(() => {
-        fetchSource('/api/cities')
-            .then((data) => {
-                setCities(data);
+    const getCities = (cityId = null) => {
+        const url = cityId != null ? `/api/cities?cityid=${cityId}` : '/api/cities';
 
-                if (targetCityId) {
-                    for (const city of data) {
-                        if (city.id === targetCityId) {
-                            setSelectedCity(city);
-                            break;
-                        }
-                    }
+        fetchSource(url)
+            .then((data) => {
+                if (data.length > 0) {
+                    setCities(data);
                 }
             })
             .catch(handleAjaxError);
+    };
+
+    useEffect(() => {
+        getCities();
     }, []);
+
+    useEffect(() => {
+        if (cities.length > 0 && targetCityId) {
+            for (const city of cities) {
+                if (city.id === targetCityId) {
+                    setSelectedCity(city);
+                    break;
+                }
+            }
+        }
+    }, [cities]);
 
     return (
         <div className="flex min-h-screen bg-slate-950 p-8 font-mono">
