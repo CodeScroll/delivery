@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
                 CategorySeeder::class,
                 CompanyTypeSeeder::class,
                 CompanySeeder::class,
+                ProductsSeeder::class,
             ]);
         } else {
 
