@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use App\Models\City;
+use Illuminate\Support\Facades\Lang;
+
 class General
 {
     static function generateUniqueId($class, $column = 'unique_id', $length = 7)
@@ -20,5 +23,21 @@ class General
         } while ($uniqueIdExist);
 
         return $digits;
+    }
+
+    static function addressStr(?City $city, string $address, ?string $street = null, ?string $floor = null)
+    {
+        $str = $city ? $city->name . ', ' : '';
+        $str .= $address;
+
+        if ($street) {
+            $str .= ' ' . $street;
+        }
+
+        if ($floor) {
+            $str .= ', ' . Lang::get('messages.floor') . ' ' . $floor;
+        }
+
+        return $str;
     }
 }

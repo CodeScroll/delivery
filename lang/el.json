@@ -3,7 +3,16 @@
     "city": "πόλη",
     "cities": "πόλεις",
     "close": "κλείσε",
+    "company": "εταιρεία",
+    "companies": "εταιρείες",
     "delivery": "διανομή",
+    "not_found" : "δεν βρέθηκε",
+    "not_founds" : "δεν βρέθηκαν",
+    "of": {
+        "company": "εταιρείας",
+        "companies": "εταιρειών"
+    },
     "selected_o": "επιλεγμένο",
-    "selected_h": "επιλεγμένη"
+    "selected_h": "επιλεγμένη",
+    "select": "επιλογή"
 }

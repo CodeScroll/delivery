@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
 import Modal from './Modal';
+import CompaniesModal from './Modals/CompaniesModal';
 
 export default function DeliveryForm({ defaultCity = null }) {
     const [activeCategory, setActiveCategory] = useState(0);
@@ -13,6 +14,7 @@ export default function DeliveryForm({ defaultCity = null }) {
     const [targetCityName, setTargetCityName] = useState(defaultCity ? defaultCity.name : null);
     const [targetCityId, setTargetCityId] = useState(defaultCity ? defaultCity.id : null);
     const [selectCityModal, setSelectCityModal] = useState(false);
+    const [companySelectModal, setCompanySelectModal] = useState(false);
 
     const selectingCity = () => {
         setSelectCityModal(true);
@@ -47,6 +49,7 @@ export default function DeliveryForm({ defaultCity = null }) {
         el: {
             setnextdel: 'Προγραμματίστε την επόμενη σας',
             bycategory: 'ανα κατηγορία',
+            bycompany: 'ανα εταιρεία',
         },
     };
 
@@ -82,7 +85,7 @@ export default function DeliveryForm({ defaultCity = null }) {
                         {ti8c('delivery')}
                     </h1>
                 </div>
-                <div style={styles.categorySection}>
+                <div className="mb-6 flex flex-col gap-4">
                     <p style={styles.textLabel}>{constTrans(transes, 'bycategory')}</p>
                     {categoriesList?.length > 0 && (
                         <div style={styles.categoryList} role="list">
@@ -118,6 +121,22 @@ export default function DeliveryForm({ defaultCity = null }) {
                                 ✕
                             </button>
                         </div>
+                    )}
+                </div>
+                <div className="mb-4 flex flex-col gap-1">
+                    <p style={styles.textLabel}>{constTrans(transes, 'bycompany')}</p>
+                    <button
+                        onClick={() => setCompanySelectModal(true)}
+                        className="w-auto self-start whitespace-nowrap rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition-colors duration-150 hover:bg-indigo-700 active:bg-indigo-800"
+                    >
+                        {ti8a(['select', 'of.company'])}
+                    </button>
+                    {companySelectModal && (
+                        <CompaniesModal
+                            selectedCity={targetCity}
+                            companySelectModal={companySelectModal}
+                            setCompanySelectModal={setCompanySelectModal}
+                        />
                     )}
                 </div>
                 <div style={styles.searchRow}>
@@ -237,11 +256,6 @@ const styles = {
         padding: '0 2px',
         display: 'flex',
         alignItems: 'center',
-    },
-    categorySection: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
     },
     textLabel: {
         fontSize: 12,
