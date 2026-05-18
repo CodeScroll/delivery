@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import CompanyCard from '../CompanyCard';
 import Modal from '../Modal';
 
-export default function CompaniesModal({ selectedCity = null, companySelectModal, setCompanySelectModal }) {
+export default function CompaniesModal({ selectedCity = null, companySelectModal, setCompanySelectModal, onClick }) {
     const [companiesList, setCompaniesList] = useState([]);
 
     const getCompanies = async () => {
@@ -27,7 +27,6 @@ export default function CompaniesModal({ selectedCity = null, companySelectModal
 
     useEffect(() => {
         getCompanies();
-        console.log('executeddd');
     }, []);
 
     return (
@@ -41,7 +40,7 @@ export default function CompaniesModal({ selectedCity = null, companySelectModal
             >
                 <div className="space-y-4 p-4">
                     {Array.isArray(companiesList) && companiesList.length > 0 ? (
-                        companiesList.map((company) => <CompanyCard key={company.id} company={company} />)
+                        companiesList.map((company) => <CompanyCard key={company.id} company={company} onClick={onClick} />)
                     ) : (
                         <p>{ti8a(['not_founds', 'companies'])}</p>
                     )}

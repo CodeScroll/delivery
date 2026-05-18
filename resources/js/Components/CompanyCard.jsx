@@ -1,6 +1,6 @@
 import { BsGeoAlt } from 'react-icons/bs';
 
-export default function CompanyCard({ company, theme = 'light' }) {
+export default function CompanyCard({ company, theme = 'light', onClick }) {
     const isDark = theme === 'dark';
 
     const textColor = isDark ? 'text-gray-200' : 'text-gray-700';
@@ -14,7 +14,8 @@ export default function CompanyCard({ company, theme = 'light' }) {
     return (
         <>
             <div
-                className={` ${bgColor} ${borderColor} w-full gap-4 rounded-xl border p-4 shadow-sm transition duration-200 hover:border-gray-400 hover:shadow-xl`}
+                onClick={() => onClick && onClick(company)}
+                className={`${bgColor} ${borderColor} w-full cursor-pointer gap-4 rounded-xl border p-4 shadow-sm transition duration-200 hover:border-gray-400 hover:shadow-xl`}
             >
                 <div className="flex items-start">
                     <img src={logoUrl} alt={`${company?.name} logo`} className="h-14 w-14 flex-shrink-0 rounded-lg object-cover" />

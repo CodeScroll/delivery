@@ -15,6 +15,7 @@ export default function DeliveryForm({ defaultCity = null }) {
     const [targetCityId, setTargetCityId] = useState(defaultCity ? defaultCity.id : null);
     const [selectCityModal, setSelectCityModal] = useState(false);
     const [companySelectModal, setCompanySelectModal] = useState(false);
+    const [selectedCompanies, setSelectedCompanies] = useState([]);
 
     const selectingCity = () => {
         setSelectCityModal(true);
@@ -44,6 +45,10 @@ export default function DeliveryForm({ defaultCity = null }) {
         setSearchValue(val);
         searchingProduct(val);
     }
+
+    const selectingCompany = (companyItem) => {
+        setSelectedCompanies((prev) => [...prev, companyItem]);
+    };
 
     const transes = {
         el: {
@@ -136,6 +141,7 @@ export default function DeliveryForm({ defaultCity = null }) {
                             selectedCity={targetCity}
                             companySelectModal={companySelectModal}
                             setCompanySelectModal={setCompanySelectModal}
+                            onClick={selectingCompany}
                         />
                     )}
                 </div>
