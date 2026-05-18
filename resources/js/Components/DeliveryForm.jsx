@@ -2,6 +2,7 @@ import { constTrans, fetchSource } from '@/api';
 import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
+import CompanyCard from './CompanyCard';
 import Modal from './Modal';
 import CompaniesModal from './Modals/CompaniesModal';
 
@@ -47,7 +48,17 @@ export default function DeliveryForm({ defaultCity = null }) {
     }
 
     const selectingCompany = (companyItem) => {
-        setSelectedCompanies((prev) => [...prev, companyItem]);
+        setSelectedCompanies((prev) => {
+            const exists = prev.some((c) => c.id === companyItem.id);
+
+            if (exists) return prev;
+
+            return [...prev, companyItem];
+        });
+    };
+
+    const removeCompany = (companyId) => {
+        setSelectedCompanies((prev) => prev.filter((company) => company.id !== companyId));
     };
 
     const transes = {
@@ -55,6 +66,7 @@ export default function DeliveryForm({ defaultCity = null }) {
             setnextdel: 'Προγραμματίστε την επόμενη σας',
             bycategory: 'ανα κατηγορία',
             bycompany: 'ανα εταιρεία',
+            selectedcomps: 'επιλεγμένες εταιρείες',
         },
     };
 
@@ -144,6 +156,19 @@ export default function DeliveryForm({ defaultCity = null }) {
                             onClick={selectingCompany}
                         />
                     )}
+                    <div className="space-y-4 p-4">
+                        <h3 className="text-sm font-semibold text-gray-700">{constTrans(transes, 'selectedcomps')}</h3>
+
+                        {selectedCompanies.length > 0 &&
+                            selectedCompanies.map((company, index) => (
+                                <CompanyCard
+                                    key={`${company.id ?? 'company'}-${index}`}
+                                    company={company}
+                                    removable={true}
+                                    onRemove={() => removeCompany(company.id)}
+                                />
+                            ))}
+                    </div>
                 </div>
                 <div style={styles.searchRow}>
                     <div style={styles.searchBox}>

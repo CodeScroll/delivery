@@ -39,7 +39,7 @@ export default function CompaniesModal({ selectedCity = null, companySelectModal
                 maxWidth="7xl"
             >
                 <div className="space-y-4 p-4">
-                    {Array.isArray(companiesList) && companiesList.length > 0 ? (
+                    {companiesList.length > 0 ? (
                         companiesList.map((company) => <CompanyCard key={company.id} company={company} onClick={onClick} />)
                     ) : (
                         <p>{ti8a(['not_founds', 'companies'])}</p>
