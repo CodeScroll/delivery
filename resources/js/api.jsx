@@ -30,6 +30,23 @@ export async function fetchSource(url, options = {}) {
     }
 }
 
-export function handleAjaxError (error) {
+export async function fetchProducts(params = {}) {
+    let url = `/api/products`;
+
+    const queryString = Object.entries(params)
+        .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+
+    if (queryString) url += `?${queryString}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    return await response.json();
+}
+
+export function handleAjaxError(error) {
     console.error('handleAjaxError', error);
-};
+}

@@ -1,4 +1,4 @@
-import { constTrans, fetchSource } from '@/api';
+import { constTrans, fetchProducts, fetchSource } from '@/api';
 import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
@@ -11,12 +11,14 @@ export default function DeliveryForm({ defaultCity = null }) {
     const [categoriesList, setCategoriesList] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [searchValue, setSearchValue] = useState('');
+    const [searchingProductLoader, setSearchingProductLoader] = useState(false);
     const [targetCity, setTargetCity] = useState(defaultCity);
     const [targetCityName, setTargetCityName] = useState(defaultCity ? defaultCity.name : null);
     const [targetCityId, setTargetCityId] = useState(defaultCity ? defaultCity.id : null);
     const [selectCityModal, setSelectCityModal] = useState(false);
     const [companySelectModal, setCompanySelectModal] = useState(false);
-    const [selectedCompanies, setSelectedCompanies] = useState([]);
+    const [selectedCompany, setSelectedCompany] = useState(null);
+    const [foundProducts, setFoundProducts] = useState([]);
 
     const selectingCity = () => {
         setSelectCityModal(true);
@@ -39,26 +41,41 @@ export default function DeliveryForm({ defaultCity = null }) {
 
     function searchingProduct(value) {
         console.log('Searching for:', value);
+        setSearchingProductLoader(true);
+
+        const params = {
+            ...(value != null && { search: value }),
+            ...(targetCityId != null && { cityid: targetCityId }),
+            ...(selectedCategory?.id != null && { categoryid: selectedCategory.id }),
+            ...(selectedCompany?.id != null && { companyid: selectedCompany.id }),
+        };
+
+        fetchProducts(params)
+            .then((data) => {
+                if (data.data.length > 0) {
+                    setFoundProducts(data.data);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching products:', error);
+            })
+            .finally(() => {
+                setSearchingProductLoader(false);
+            });
     }
 
     function handleSearchChange(e) {
         const val = e.target.value;
         setSearchValue(val);
-        searchingProduct(val);
     }
 
     const selectingCompany = (companyItem) => {
-        setSelectedCompanies((prev) => {
-            const exists = prev.some((c) => c.id === companyItem.id);
-
-            if (exists) return prev;
-
-            return [...prev, companyItem];
-        });
+        setSelectedCompany(companyItem);
+        setCompanySelectModal(false);
     };
 
-    const removeCompany = (companyId) => {
-        setSelectedCompanies((prev) => prev.filter((company) => company.id !== companyId));
+    const removeCompany = () => {
+        setSelectedCompany(null);
     };
 
     const transes = {
@@ -66,7 +83,7 @@ export default function DeliveryForm({ defaultCity = null }) {
             setnextdel: 'Προγραμματίστε την επόμενη σας',
             bycategory: 'ανα κατηγορία',
             bycompany: 'ανα εταιρεία',
-            selectedcomps: 'επιλεγμένες εταιρείες',
+            selectedcomp: 'επιλεγμένη εταιρεία',
         },
     };
 
@@ -84,6 +101,16 @@ export default function DeliveryForm({ defaultCity = null }) {
             setTargetCityId(targetCity.id);
         }
     }, [targetCity]);
+
+    useEffect(() => {
+        if (searchValue.length < 2) return;
+
+        const timer = setTimeout(() => {
+            searchingProduct(searchValue);
+        }, 800);
+
+        return () => clearTimeout(timer);
+    }, [searchValue]);
 
     return (
         <>
@@ -157,17 +184,8 @@ export default function DeliveryForm({ defaultCity = null }) {
                         />
                     )}
                     <div className="space-y-4 p-4">
-                        <h3 className="text-sm font-semibold text-gray-700">{constTrans(transes, 'selectedcomps')}</h3>
-
-                        {selectedCompanies.length > 0 &&
-                            selectedCompanies.map((company, index) => (
-                                <CompanyCard
-                                    key={`${company.id ?? 'company'}-${index}`}
-                                    company={company}
-                                    removable={true}
-                                    onRemove={() => removeCompany(company.id)}
-                                />
-                            ))}
+                        <h3 className="text-sm font-semibold text-gray-700">{constTrans(transes, 'selectedcomp')}</h3>
+                        {selectedCompany && <CompanyCard company={selectedCompany} removable={true} onRemove={removeCompany} />}
                     </div>
                 </div>
                 <div style={styles.searchRow}>
@@ -186,14 +204,31 @@ export default function DeliveryForm({ defaultCity = null }) {
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
-                        <input
-                            type="text"
-                            placeholder="Search products…"
-                            value={searchValue}
-                            onChange={handleSearchChange}
-                            style={styles.input}
-                            aria-label="Search products"
-                        />
+                        <div className="relative flex flex-1 items-center">
+                            <input
+                                type="text"
+                                placeholder={ti8a(['search', 'products'])}
+                                value={searchValue}
+                                onChange={handleSearchChange}
+                                disabled={searchingProductLoader}
+                                className="font-inherit flex-1 border-0 bg-transparent py-[14px] text-[16px] text-[#1a1510] caret-[#c47f3a] outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                aria-label="Search products"
+                            />
+                            {searchingProductLoader && (
+                                <span className="pointer-events-none absolute right-2 flex items-center">
+                                    <svg
+                                        className="h-4 w-4 animate-spin text-[#c47f3a]"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                    </svg>
+                                </span>
+                            )}
+                        </div>
                         {searchValue && (
                             <button
                                 style={styles.clearBtn}
@@ -265,17 +300,6 @@ const styles = {
     searchIcon: {
         color: '#9a8c7e',
         flexShrink: 0,
-    },
-    input: {
-        flex: 1,
-        border: 'none',
-        background: 'transparent',
-        outline: 'none',
-        fontSize: 16,
-        color: '#1a1510',
-        padding: '14px 0',
-        fontFamily: 'inherit',
-        caretColor: '#c47f3a',
     },
     clearBtn: {
         background: 'none',
