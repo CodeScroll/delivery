@@ -2,6 +2,7 @@
 
 namespace App\Builders;
 
+use App\Http\Resources\ProductIndexResource;
 use App\Models\Product;
 use Illuminate\Support\Facades\Lang;
 
@@ -17,7 +18,7 @@ class ProductsBuilder
         return [
             'status' => $status,
             'msg' => $msg,
-            'products' => $products,
+            'products' => ProductIndexResource::collection($products),
         ];
     }
 }

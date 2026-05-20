@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, showSlug = false }) {
     const [hovered, setHovered] = useState(false);
 
     const { category, name, slug, price, estimated_price } = product;
@@ -19,8 +19,11 @@ export default function ProductCard({ product }) {
 
             <div className="px-5 pb-5 pt-3">
                 <h2 className="mt-1 text-[17px] font-bold leading-snug tracking-tight text-zinc-900">{name}</h2>
-
-                <p className="mt-1 truncate font-mono text-[11px] tracking-wide text-zinc-400">/{slug}</p>
+                {showSlug && (
+                    <div>
+                        <p className="mt-1 truncate font-mono text-[11px] tracking-wide text-zinc-400">/{slug}</p>
+                    </div>
+                )}
 
                 <div className="my-4 h-px bg-zinc-100" />
 
