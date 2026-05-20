@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
 import CompanyCard from './CompanyCard';
+import LoadMoreProductsButton from './LoadMoreProductsButton';
 import Modal from './Modal';
 import CompaniesModal from './Modals/CompaniesModal';
 import ProductCard from './ProductCard';
@@ -20,6 +21,9 @@ export default function DeliveryForm({ defaultCity = null }) {
     const [companySelectModal, setCompanySelectModal] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [foundProducts, setFoundProducts] = useState([]);
+    const [foundProductsPage, setFoundProductsPage] = useState(1);
+    const [productsLoadMore, setProductsLoadMore] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const selectingCity = () => {
         setSelectCityModal(true);
@@ -53,11 +57,14 @@ export default function DeliveryForm({ defaultCity = null }) {
 
         fetchProducts(params)
             .then((data) => {
-                console.log(data)
+                console.log(data);
                 if (data.status === true) {
                     if (data.products.length > 0) {
                         setFoundProducts(data.products);
                     }
+
+                    setProductsLoadMore(data.pagination.has_more);
+                    setFoundProductsPage(data.pagination.current_page + 1);
                 }
             })
             .catch((error) => {
@@ -81,6 +88,8 @@ export default function DeliveryForm({ defaultCity = null }) {
     const removeCompany = () => {
         setSelectedCompany(null);
     };
+
+    const handleLoadMoreProduct = () => {};
 
     const transes = {
         el: {
@@ -252,6 +261,11 @@ export default function DeliveryForm({ defaultCity = null }) {
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
+                {productsLoadMore && (
+                    <div className="my-3">
+                        <LoadMoreProductsButton onClick={handleLoadMoreProduct} loading={loading} />
+                    </div>
+                )}
             </div>
             <Modal
                 show={selectCityModal}
