@@ -53,12 +53,11 @@ export default function DeliveryForm({ defaultCity = null }) {
         resetFoundedProducts();
     }
 
-    function searchingProduct(value) {
-        console.log('Searching for:', value);
+    function searchingProduct() {
         setSearchingProductLoader(true);
 
         const params = {
-            ...(value != null && { search: value }),
+            ...(searchValue != null && { search: searchValue }),
             ...(targetCityId != null && { cityid: targetCityId }),
             ...(selectedCategory?.id != null && { categoryid: selectedCategory.id }),
             ...(selectedCompany?.id != null && { companyid: selectedCompany.id }),
@@ -131,11 +130,15 @@ export default function DeliveryForm({ defaultCity = null }) {
         if (searchValue.length < 2) return;
 
         const timer = setTimeout(() => {
-            searchingProduct(searchValue);
+            searchingProduct();
         }, 800);
 
         return () => clearTimeout(timer);
     }, [searchValue]);
+
+    useEffect(() => {
+        searchingProduct();
+    }, [activeCategory, selectedCompany]);
 
     return (
         <>
