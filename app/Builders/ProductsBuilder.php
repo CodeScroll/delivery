@@ -10,14 +10,14 @@ class ProductsBuilder
 
     function index($request)
     {
-        $status = false;
+        $status = true;
         $msg = Lang::get('messages.not_found');
         $companyQuery = Product::query();
         $products = $companyQuery->paginate(env('PRODUCTSINDEXLIMIT'));
-        return response()->json([
+        return [
             'status' => $status,
             'msg' => $msg,
             'products' => $products,
-        ]);
+        ];
     }
 }

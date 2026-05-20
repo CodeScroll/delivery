@@ -5,6 +5,7 @@ import CitiesList from './CitiesList';
 import CompanyCard from './CompanyCard';
 import Modal from './Modal';
 import CompaniesModal from './Modals/CompaniesModal';
+import ProductCard from './ProductCard';
 
 export default function DeliveryForm({ defaultCity = null }) {
     const [activeCategory, setActiveCategory] = useState(0);
@@ -54,7 +55,7 @@ export default function DeliveryForm({ defaultCity = null }) {
             .then((data) => {
                 if (data.status === true) {
                     if (data.products.data.length > 0) {
-                        setFoundProducts(data.data);
+                        setFoundProducts(data.products.data);
                     }
                 }
             })
@@ -116,7 +117,7 @@ export default function DeliveryForm({ defaultCity = null }) {
 
     return (
         <>
-            <div style={styles.wrapper}>
+            <div className="mx-auto box-border max-w-[1240px] px-6 pb-8 pt-12 font-serif">
                 <div style={styles.header}>
                     <div className="flex items-center gap-1">
                         <span style={styles.textLabel}>{ti8c('city')}:</span>
@@ -245,6 +246,11 @@ export default function DeliveryForm({ defaultCity = null }) {
                         )}
                     </div>
                 </div>
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {(foundProducts || []).map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </div>
             </div>
             <Modal
                 show={selectCityModal}
@@ -260,13 +266,6 @@ export default function DeliveryForm({ defaultCity = null }) {
 }
 
 const styles = {
-    wrapper: {
-        fontFamily: "'Georgia', serif",
-        maxWidth: 640,
-        margin: '0 auto',
-        padding: '3rem 1.5rem 2rem',
-        boxSizing: 'border-box',
-    },
     header: {
         marginBottom: '2rem',
     },
