@@ -52,8 +52,10 @@ export default function DeliveryForm({ defaultCity = null }) {
 
         fetchProducts(params)
             .then((data) => {
-                if (data.data.length > 0) {
-                    setFoundProducts(data.data);
+                if (data.status === true) {
+                    if (data.products.data.length > 0) {
+                        setFoundProducts(data.data);
+                    }
                 }
             })
             .catch((error) => {
