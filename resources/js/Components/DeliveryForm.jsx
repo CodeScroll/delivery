@@ -29,9 +29,16 @@ export default function DeliveryForm({ defaultCity = null }) {
         setSelectCityModal(true);
     };
 
+    const resetFoundedProducts = () => {
+        setFoundProducts([]);
+        setFoundProductsPage(1);
+        setProductsLoadMore(false);
+    };
+
     const clearSelectedCategory = () => {
         setActiveCategory(0);
         setSelectedCategory(null);
+        resetFoundedProducts();
     };
 
     function categorySelecting(category) {
@@ -42,6 +49,8 @@ export default function DeliveryForm({ defaultCity = null }) {
             setActiveCategory(category.id);
             setSelectedCategory(category);
         }
+
+        resetFoundedProducts();
     }
 
     function searchingProduct(value) {
@@ -83,10 +92,12 @@ export default function DeliveryForm({ defaultCity = null }) {
     const selectingCompany = (companyItem) => {
         setSelectedCompany(companyItem);
         setCompanySelectModal(false);
+        resetFoundedProducts();
     };
 
     const removeCompany = () => {
         setSelectedCompany(null);
+        resetFoundedProducts();
     };
 
     const handleLoadMoreProduct = () => {};
@@ -112,6 +123,7 @@ export default function DeliveryForm({ defaultCity = null }) {
         if (targetCity) {
             setTargetCityName(targetCity.name);
             setTargetCityId(targetCity.id);
+            resetFoundedProducts();
         }
     }, [targetCity]);
 
