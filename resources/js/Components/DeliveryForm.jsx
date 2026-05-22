@@ -21,9 +21,22 @@ export default function DeliveryForm({ defaultCity = null }) {
     const [companySelectModal, setCompanySelectModal] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [foundProducts, setFoundProducts] = useState([]);
+    const [selectedProducts, setSelectedProducts] = useState([]);
     const [foundProductsPage, setFoundProductsPage] = useState(1);
     const [productsLoadMore, setProductsLoadMore] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const handleSelectProduct = (product) => {
+        setSelectedProducts((prevProducts) => {
+            const existingProduct = prevProducts.find((p) => p.id === product.id);
+
+            if (existingProduct) {
+                return prevProducts.map((p) => (p.id === product.id ? { ...p, items_quantity: p.items_quantity + 1 } : p));
+            }
+
+            return [...prevProducts, { ...product, items_quantity: 1 }];
+        });
+    };
 
     const selectingCity = () => {
         setSelectCityModal(true);
@@ -142,7 +155,7 @@ export default function DeliveryForm({ defaultCity = null }) {
 
     return (
         <>
-            <div className="mx-auto box-border max-w-[1240px] px-6 pb-8 pt-12 font-serif">
+            <div className="mx-auto box-border max-w-[1536px] px-6 pb-8 pt-12 font-serif">
                 <div style={styles.header}>
                     <div className="flex items-center gap-1">
                         <span style={styles.textLabel}>{ti8c('city')}:</span>
@@ -273,7 +286,7 @@ export default function DeliveryForm({ defaultCity = null }) {
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {(foundProducts || []).map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                        <ProductCard key={product.id} product={product} onSelect={handleSelectProduct} />
                     ))}
                 </div>
                 {productsLoadMore && (

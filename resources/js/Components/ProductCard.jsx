@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ProductCard({ product, showSlug = false }) {
+export default function ProductCard({ product, showSlug = false, onSelect = null }) {
     const [hovered, setHovered] = useState(false);
 
     const { category, name, slug, price, estimated_price } = product;
@@ -9,6 +9,7 @@ export default function ProductCard({ product, showSlug = false }) {
         <div
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
+            onClick={onSelect ? () => onSelect(product) : null}
             className={`group relative w-72 cursor-pointer overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition-all duration-300 ease-out ${hovered ? '-translate-y-1 shadow-xl' : ''} `}
         >
             <div className="px-5 pb-0 pt-5">
