@@ -1,4 +1,5 @@
 import { constTrans, fetchProducts, fetchSource } from '@/api';
+import { useBasket } from '@/Providers/BasketProvider';
 import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
@@ -9,6 +10,7 @@ import CompaniesModal from './Modals/CompaniesModal';
 import ProductCard from './ProductCard';
 
 export default function DeliveryForm({ defaultCity = null }) {
+    const { addToBasket } = useBasket();
     const [activeCategory, setActiveCategory] = useState(0);
     const [categoriesList, setCategoriesList] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -21,20 +23,14 @@ export default function DeliveryForm({ defaultCity = null }) {
     const [companySelectModal, setCompanySelectModal] = useState(false);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [foundProducts, setFoundProducts] = useState([]);
-    const [selectedProducts, setSelectedProducts] = useState([]);
     const [foundProductsPage, setFoundProductsPage] = useState(1);
     const [productsLoadMore, setProductsLoadMore] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleSelectProduct = (product) => {
-        setSelectedProducts((prevProducts) => {
-            const existingProduct = prevProducts.find((p) => p.id === product.id);
-
-            if (existingProduct) {
-                return prevProducts.map((p) => (p.id === product.id ? { ...p, items_quantity: p.items_quantity + 1 } : p));
-            }
-
-            return [...prevProducts, { ...product, items_quantity: 1 }];
+        addToBasket({
+            ...product,
+            quantity: 1,
         });
     };
 
