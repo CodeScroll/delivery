@@ -1,5 +1,6 @@
 import { addItem, calcItemCount, calcTotal, removeItem, updateQuantity as updateQty } from '@/Utils/basketHelpers';
-import { createContext, useCallback, useContext, useState } from 'react';
+import Cookies from 'js-cookie';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 const BasketContext = createContext();
 
@@ -7,20 +8,78 @@ export function BasketProvider({ children }) {
     const [items, setItems] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
 
-    const addToBasket = useCallback((product) => {
-        setItems((prev) => addItem(prev, product));
-        setIsOpen(true);
+    useEffect(() => {
+        const cookiesAccepted = Cookies.get('cookiesAccepted');
+
+        if (cookiesAccepted === 'true') {
+            const savedCart = Cookies.get('cart');
+
+            if (savedCart) {
+                setItems(JSON.parse(savedCart));
+            } else {
+                Cookies.set('cart', JSON.stringify([]), {
+                    expires: 1,
+                });
+            }
+        }
     }, []);
 
-    const removeFromBasket = useCallback((id) => {
-        setItems((prev) => removeItem(prev, id));
+    const saveCartCookie = useCallback((updatedItems) => {
+        const cookiesAccepted = Cookies.get('cookiesAccepted');
+
+        if (cookiesAccepted === 'true') {
+            Cookies.set('cart', JSON.stringify(updatedItems), {
+                expires: 1,
+            });
+        }
     }, []);
 
-    const updateQuantity = useCallback((id, quantity) => {
-        setItems((prev) => updateQty(prev, id, quantity));
-    }, []);
+    const addToBasket = useCallback(
+        (product) => {
+            setItems((prev) => {
+                const updated = addItem(prev, product);
 
-    const clearBasket = useCallback(() => setItems([]), []);
+                saveCartCookie(updated);
+
+                return updated;
+            });
+
+            setIsOpen(true);
+        },
+        [saveCartCookie],
+    );
+
+    const removeFromBasket = useCallback(
+        (id) => {
+            setItems((prev) => {
+                const updated = removeItem(prev, id);
+
+                saveCartCookie(updated);
+
+                return updated;
+            });
+        },
+        [saveCartCookie],
+    );
+
+    const updateQuantity = useCallback(
+        (id, quantity) => {
+            setItems((prev) => {
+                const updated = updateQty(prev, id, quantity);
+
+                saveCartCookie(updated);
+
+                return updated;
+            });
+        },
+        [saveCartCookie],
+    );
+
+    const clearBasket = useCallback(() => {
+        setItems([]);
+
+        saveCartCookie([]);
+    }, [saveCartCookie]);
 
     const openBasket = useCallback(() => setIsOpen(true), []);
     const closeBasket = useCallback(() => setIsOpen(false), []);
