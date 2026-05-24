@@ -1,5 +1,4 @@
 import { constTrans, fetchProducts, fetchSource } from '@/api';
-import { useBasket } from '@/Providers/BasketProvider';
 import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
@@ -54,11 +53,11 @@ export default function DeliveryForm({ defaultCity = null }) {
         resetFoundedProducts();
     }
 
-    function searchingProduct() {
+    function searchingProduct(value = searchValue) {
         setSearchingProductLoader(true);
 
         const params = {
-            ...(searchValue != null && { search: searchValue }),
+            ...(value != null && { search: value }),
             ...(targetCityId != null && { cityid: targetCityId }),
             ...(selectedCategory?.id != null && { categoryid: selectedCategory.id }),
             ...(selectedCompany?.id != null && { companyid: selectedCompany.id }),
@@ -74,6 +73,8 @@ export default function DeliveryForm({ defaultCity = null }) {
 
                     setProductsLoadMore(data.pagination.has_more);
                     setFoundProductsPage(data.pagination.current_page + 1);
+                } else {
+                    setFoundProducts([]);
                 }
             })
             .catch((error) => {
