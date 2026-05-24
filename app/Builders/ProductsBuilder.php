@@ -15,8 +15,14 @@ class ProductsBuilder
         $msg = Lang::get('messages.not_found');
         $productQuery = Product::query();
 
-        if($request->has('categoryid')) {
+        if ($request->has('categoryid')) {
             $productQuery->where('category_id', $request->categoryid);
+        }
+
+        if ($request->has('cityid')) {
+            $products = Product::whereHas('cities', function ($q) use ($request) {
+                $q->where('city_id', $request->cityid);
+            })->get();
         }
 
         $products = $productQuery->paginate(env('PRODUCTSINDEXLIMIT'));

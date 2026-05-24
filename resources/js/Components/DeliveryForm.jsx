@@ -10,7 +10,6 @@ import CompaniesModal from './Modals/CompaniesModal';
 import ProductCard from './ProductCard';
 
 export default function DeliveryForm({ defaultCity = null }) {
-    const { addToBasket } = useBasket();
     const [activeCategory, setActiveCategory] = useState(0);
     const [categoriesList, setCategoriesList] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -140,7 +139,7 @@ export default function DeliveryForm({ defaultCity = null }) {
 
     useEffect(() => {
         searchingProduct();
-    }, [activeCategory, selectedCompany]);
+    }, [activeCategory, selectedCompany, targetCity]);
 
     return (
         <>
