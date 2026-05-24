@@ -25,6 +25,15 @@ class ProductsBuilder
             })->get();
         }
 
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+
+            $productQuery->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                    ->orWhere('slug', 'LIKE', "%{$search}%");
+            });
+        }
+
         $products = $productQuery->paginate(env('PRODUCTSINDEXLIMIT'));
         if ($products->count() > 0) {
             $status = true;
