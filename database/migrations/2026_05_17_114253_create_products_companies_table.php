@@ -16,6 +16,10 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
             $table->foreignId('company_id')->constrained('companies')->cascadeOnDelete();
             $table->decimal('price', 10, 2)->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+
+            $table->unique(['product_id', 'company_id']);
         });
     }
 

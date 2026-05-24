@@ -23,6 +23,7 @@ export default function CheckoutBasket() {
         el: {
             basket: 'Καλάθι',
             continueshopping: 'Συνέχεια αγορών',
+            basketempty: '  Το καλάθι σας είναι άδειο.',
         },
     };
 
@@ -51,11 +52,11 @@ export default function CheckoutBasket() {
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-6">
+                <div className="flex-1 overflow-y-auto px-6 my-4">
                     {items.length === 0 ? (
                         <div className="flex h-full flex-col items-center justify-center gap-4 pb-16 text-center">
                             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-stone-800 text-4xl">🛍️</div>
-                            <p className="text-sm text-stone-400">Your basket is empty.</p>
+                            <p className="text-sm text-stone-400">{constTrans(transes, 'basketempty')}</p>
                         </div>
                     ) : (
                         <div>
