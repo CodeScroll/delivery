@@ -9,15 +9,21 @@ use Illuminate\Support\Facades\Lang;
 class ProductsBuilder
 {
 
-    function index($request)
+    function index(object $request)
     {
         $status = false;
         $msg = Lang::get('messages.not_found');
-        $companyQuery = Product::query();
-        $products = $companyQuery->paginate(env('PRODUCTSINDEXLIMIT'));
+        $productQuery = Product::query();
+
+        if($request->has('categoryid')) {
+            $productQuery->where('category_id', $request->categoryid);
+        }
+
+        $products = $productQuery->paginate(env('PRODUCTSINDEXLIMIT'));
         if ($products->count() > 0) {
             $status = true;
         }
+
         return [
             'status' => $status,
             'msg' => $msg,

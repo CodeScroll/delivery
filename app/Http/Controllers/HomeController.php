@@ -15,4 +15,9 @@ class HomeController extends Controller
             'defaultCity' => $defaultCity,
         ]);
     }
+
+    public function checkoutPage()
+    {
+        return Inertia::render('Checkout');
+    }
 }

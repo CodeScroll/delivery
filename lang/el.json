@@ -4,6 +4,7 @@
     "cities": "πόλεις",
     "close": "κλείσε",
     "cart": "καλάθι",
+    "checkout": "ταμείο",
     "company": "εταιρεία",
     "companies": "εταιρείες",
     "delivery": "διανομή",
@@ -27,6 +28,7 @@
     "selected_o": "επιλεγμένο",
     "selected_h": "επιλεγμένη",
     "select": "επιλογή",
+    "shipping": "αποστολή",
     "shipment": "αποστολή",
     "search": "αναζήτηση"
 }

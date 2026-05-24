@@ -12,7 +12,7 @@ export default function GuestLayout({ children }) {
             <BasketProvider>
                 <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-                <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0">
+                <div className="flex flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0">
                     <GuestHeader
                         onCartClick={() => {
                             setCartOpen(true);

@@ -1,4 +1,4 @@
-import { addItem, calcItemCount, calcTotal, removeItem, updateQuantity as updateQty } from '@/Utils/basketHelpers';
+import { addItem, calcItemCount, calcTotal, calcEstimatedTotal, removeItem, updateQuantity as updateQty } from '@/Utils/basketHelpers';
 import Cookies from 'js-cookie';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
@@ -86,6 +86,7 @@ export function BasketProvider({ children }) {
     const toggleBasket = useCallback(() => setIsOpen((v) => !v), []);
 
     const total = calcTotal(items);
+    const estimatedTotal = calcEstimatedTotal(items);
     const itemCount = calcItemCount(items);
 
     return (
@@ -97,6 +98,7 @@ export function BasketProvider({ children }) {
                 updateQuantity,
                 clearBasket,
                 total,
+                estimatedTotal,
                 itemCount,
                 isOpen,
                 openBasket,
