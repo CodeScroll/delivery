@@ -1,5 +1,6 @@
 import { useBasket } from '@/Providers/BasketProvider';
 import { constTrans } from '@/api';
+import { router } from '@inertiajs/react';
 
 const fmt = (n) => `€${n.toFixed(2)}`;
 
@@ -69,7 +70,7 @@ function CartItem({ item, onRemove, onQtyChange }) {
     );
 }
 
-export default function CartSidebar({ isOpen = true, onClose = () => {}, items: externalItems, onCheckout = () => {} }) {
+export default function CartSidebar({ isOpen = true, onClose = () => {} }) {
     const { items, updateQuantity, removeFromBasket } = useBasket();
 
     const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
@@ -163,7 +164,10 @@ export default function CartSidebar({ isOpen = true, onClose = () => {}, items: 
                         </div>
 
                         <button
-                            onClick={onCheckout}
+                            onClick={() => {
+                                onClose();
+                                router.visit('/checkout');
+                            }}
                             className="h-11 w-full rounded-xl bg-stone-900 text-[13px] font-medium tracking-wide text-[#FAFAF8] transition-colors hover:bg-stone-700"
                         >
                             {constTrans(transes, 'proceedcheckout')} →
