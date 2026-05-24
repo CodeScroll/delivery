@@ -27,13 +27,6 @@ export default function DeliveryForm({ defaultCity = null }) {
     const [productsLoadMore, setProductsLoadMore] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleSelectProduct = (product) => {
-        addToBasket({
-            ...product,
-            quantity: 1,
-        });
-    };
-
     const selectingCity = () => {
         setSelectCityModal(true);
     };
@@ -282,7 +275,7 @@ export default function DeliveryForm({ defaultCity = null }) {
                 </div>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {(foundProducts || []).map((product) => (
-                        <ProductCard key={product.id} product={product} onSelect={handleSelectProduct} />
+                        <ProductCard key={product.id} product={product} addToBasketBtn={true} />
                     ))}
                 </div>
                 {productsLoadMore && (

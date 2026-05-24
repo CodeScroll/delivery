@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import AddToBasketButton from './Basket/AddToBasketButton';
 
-export default function ProductCard({ product, showSlug = false, onSelect = null }) {
+export default function ProductCard({ product, showSlug = false, onSelect = null, addToBasketBtn = false }) {
     const [hovered, setHovered] = useState(false);
 
     const { category, name, slug, price, estimated_price } = product;
@@ -44,7 +45,11 @@ export default function ProductCard({ product, showSlug = false, onSelect = null
                     )}
                 </div>
             </div>
-
+            {addToBasketBtn && (
+                <div className="px-5 pb-5">
+                    <AddToBasketButton product={product} />
+                </div>
+            )}
             <div className={`absolute bottom-0 left-0 h-[3px] bg-amber-400 transition-all duration-300 ease-out ${hovered ? 'w-full' : 'w-0'} `} />
         </div>
     );
