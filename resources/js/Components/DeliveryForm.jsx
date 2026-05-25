@@ -29,11 +29,11 @@ export default function DeliveryForm({ defaultCity = null }) {
         setSelectCityModal(true);
     };
 
-    const resetFoundedProducts = () => {
+    function resetFoundedProducts() {
         setFoundProducts([]);
         setFoundProductsPage(1);
         setProductsLoadMore(false);
-    };
+    }
 
     const clearSelectedCategory = () => {
         setActiveCategory(0);
@@ -53,7 +53,7 @@ export default function DeliveryForm({ defaultCity = null }) {
         resetFoundedProducts();
     }
 
-    function searchingProduct(value = searchValue) {
+    function searchingProduct(value = searchValue, page = 1) {
         setSearchingProductLoader(true);
 
         const params = {
@@ -61,6 +61,7 @@ export default function DeliveryForm({ defaultCity = null }) {
             ...(targetCityId != null && { cityid: targetCityId }),
             ...(selectedCategory?.id != null && { categoryid: selectedCategory.id }),
             ...(selectedCompany?.id != null && { companyid: selectedCompany.id }),
+            ...(page != null && { page: page }),
         };
 
         fetchProducts(params)
@@ -68,7 +69,11 @@ export default function DeliveryForm({ defaultCity = null }) {
                 console.log(data);
                 if (data.status === true) {
                     if (data.products.length > 0) {
-                        setFoundProducts(data.products);
+                        if (data.pagination.current_page === 1) {
+                            setFoundProducts(data.products);
+                        } else {
+                            setFoundProducts((prev) => [...prev, ...data.products]);
+                        }
                     }
 
                     setProductsLoadMore(data.pagination.has_more);
@@ -101,7 +106,9 @@ export default function DeliveryForm({ defaultCity = null }) {
         resetFoundedProducts();
     };
 
-    const handleLoadMoreProduct = () => {};
+    const handleLoadMoreProduct = () => {
+        searchingProduct(searchValue, foundProductsPage);
+    };
 
     const transes = {
         el: {
@@ -132,7 +139,7 @@ export default function DeliveryForm({ defaultCity = null }) {
         if (searchValue.length < 2) return;
 
         const timer = setTimeout(() => {
-            searchingProduct();
+            searchingProduct(searchValue);
         }, 800);
 
         return () => clearTimeout(timer);
