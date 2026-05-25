@@ -1,4 +1,4 @@
-import { fetchSource } from '@/api';
+import { constTrans, fetchSource } from '@/api';
 import AddressCard from '@/Components/AddressCard';
 import CheckoutBasket from '@/Components/Basket/CheckoutBasket';
 import AccessModal from '@/Components/Modals/AccessModal';
@@ -12,6 +12,12 @@ export default function Checkout({}) {
     const [address, setAddress] = useState({});
     const [pageUrl, setPageUrl] = useState(null);
     const { auth } = usePage().props;
+
+    const transes = {
+        el: {
+            lastusedcreated: 'Τελευταία χρησιμοποιημένη / δημιουργημένη',
+        },
+    };
 
     const handleOnOrder = () => {
         // your order logic here
@@ -46,8 +52,14 @@ export default function Checkout({}) {
             <AccessModal open={openAccessModal} onClose={() => setOpenAccessModal(false)} pageUrl={pageUrl}></AccessModal>
             <CheckoutBasket />
             {address && (
-                <div className="space-y-3">
-                    <AddressCard key={address.id} addr={address} index={0} onDelete={() => {}} />
+                <div className="m-auto w-full md:w-1/2">
+                    <h2 className="mb-3 text-sm font-semibold text-slate-700">
+                        {ti8c('address')} ({constTrans(transes, 'lastusedcreated')})
+                    </h2>
+
+                    <div className="space-y-3">
+                        <AddressCard key={address.id} addr={address} index={0} onDelete={() => {}} />
+                    </div>
                 </div>
             )}
             <div className="flex items-center justify-center p-6">
