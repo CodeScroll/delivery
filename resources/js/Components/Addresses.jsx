@@ -1,5 +1,8 @@
 import { constTrans, fetchSource } from '@/api';
 import { useEffect, useState } from 'react';
+import CitiesList from './CitiesList';
+import Modal from './Modal';
+import PrimaryButton from './PrimaryButton';
 
 const initialForm = {
     city: '',
@@ -84,12 +87,13 @@ export default function Addresses() {
     const [form, setForm] = useState(initialForm);
     const [errors, setErrors] = useState({});
     const [open, setOpen] = useState(false);
-
+    const [selectCityModal, setSelectCityModal] = useState(false);
+    const [targetCity, setTargetCity] = useState(null);
     const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
     const validate = () => {
         const errs = {};
-        if (!form.city.trim()) errs.city = true;
+        if (!form.city) errs.city = true;
         if (!form.address.trim()) errs.address = true;
         return errs;
     };
@@ -103,9 +107,6 @@ export default function Addresses() {
 
         try {
             const response = await axios.post('/addresses/store', form);
-
-            console.log('response:', response);
-            console.log('Success:', response.data);
             if (response.data.id) {
                 setAddresses((prev) => [...prev, form]);
             }
@@ -125,6 +126,9 @@ export default function Addresses() {
     const transes = {
         el: {
             newaddress: 'Νέα διεύθυνση',
+            cityrequired: 'Η πόλη είναι υποχρεωτική',
+            addressrequired: 'Η διεύθυνση είναι υποχρεωτική',
+            selectcity: 'Επιλέξτε πόλη',
             saveaddress: 'Αποθήκευση διεύθυνσης',
             noaddressesyet: 'Δεν έχει αποθηκευτεί ακόμη διεύθυνση',
         },
@@ -142,6 +146,15 @@ export default function Addresses() {
             .catch(console.error);
     }, []);
 
+    useEffect(() => {
+        if (targetCity) {
+            setForm((f) => ({
+                ...f,
+                city: targetCity.id,
+            }));
+        }
+    }, [targetCity]);
+
     return (
         <div
             className="flex min-h-screen items-start justify-center bg-gradient-to-br from-slate-50 to-indigo-50 p-6 pt-12"
@@ -150,7 +163,6 @@ export default function Addresses() {
             <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');`}</style>
 
             <div className="w-full max-w-md">
-                {/* Header */}
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold tracking-tight text-slate-800">{ti8c('addresses')}</h1>
                     <p className="mt-1 text-sm text-slate-400">
@@ -160,7 +172,6 @@ export default function Addresses() {
                     </p>
                 </div>
 
-                {/* Address List */}
                 {addresses.length > 0 && (
                     <div className="mb-5 flex flex-col gap-3">
                         {addresses.map((addr, i) => (
@@ -169,7 +180,6 @@ export default function Addresses() {
                     </div>
                 )}
 
-                {/* Empty state */}
                 {addresses.length === 0 && !open && (
                     <div className="mb-4 flex flex-col items-center justify-center py-10 text-slate-300">
                         <svg className="mb-3 h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
@@ -184,7 +194,6 @@ export default function Addresses() {
                     </div>
                 )}
 
-                {/* Create Address Form */}
                 {open ? (
                     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                         {/* Form header */}
@@ -204,8 +213,10 @@ export default function Addresses() {
                             </button>
                         </div>
 
-                        {/* Form body */}
                         <div className="flex flex-col gap-4 px-5 py-4">
+                            <PrimaryButton className="bg-blue-600" onClick={() => setSelectCityModal(true)}>
+                                {constTrans(transes, 'selectcity')}
+                            </PrimaryButton>
                             {/* City */}
                             <div className="flex flex-col gap-1.5">
                                 <label htmlFor="city" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -214,15 +225,15 @@ export default function Addresses() {
                                 </label>
                                 <input
                                     id="city"
-                                    value={form.city}
-                                    onChange={set('city')}
-                                    placeholder="e.g. Athens"
-                                    className={`w-full rounded-xl border bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-300 transition-all duration-150 focus:border-transparent focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 ${errors.city ? 'border-red-300 ring-1 ring-red-300' : 'border-slate-200'}`}
+                                    value={targetCity?.name || ''}
+                                    disabled
+                                    className={`w-full cursor-not-allowed rounded-xl border bg-slate-100 px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-300 opacity-80 transition-all duration-150 ${
+                                        errors.city ? 'border-red-300 ring-1 ring-red-300' : 'border-slate-200'
+                                    }`}
                                 />
-                                {errors.city && <p className="text-xs text-red-400">City is required</p>}
+                                {errors.city && <p className="text-xs text-red-400">{constTrans(transes, 'cityrequired')}</p>}
                             </div>
 
-                            {/* Address */}
                             <div className="flex flex-col gap-1.5">
                                 <label htmlFor="address" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                                     {ti8c('address')}
@@ -235,10 +246,9 @@ export default function Addresses() {
                                     placeholder="e.g. Ermou 12"
                                     className={`w-full rounded-xl border bg-slate-50 px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-300 transition-all duration-150 focus:border-transparent focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 ${errors.address ? 'border-red-300 ring-1 ring-red-300' : 'border-slate-200'}`}
                                 />
-                                {errors.address && <p className="text-xs text-red-400">Address is required</p>}
+                                {errors.address && <p className="text-xs text-red-400">{constTrans(transes, 'addressrequired')}</p>}
                             </div>
 
-                            {/* Street + Floor side by side */}
                             <div className="grid grid-cols-2 gap-3">
                                 <Field
                                     label={ti8c('addressstreet')}
@@ -260,7 +270,6 @@ export default function Addresses() {
                             />
                         </div>
 
-                        {/* Form footer */}
                         <div className="flex gap-2 px-5 pb-5">
                             <button
                                 onClick={() => {
@@ -292,6 +301,15 @@ export default function Addresses() {
                     </button>
                 )}
             </div>
+            <Modal
+                show={selectCityModal}
+                onClose={() => {
+                    setSelectCityModal(false);
+                }}
+                maxWidth="7xl"
+            >
+                <CitiesList setTargetCity={setTargetCity} targetCity={targetCity} />
+            </Modal>
         </div>
     );
 }
