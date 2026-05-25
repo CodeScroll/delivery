@@ -30,7 +30,7 @@ export default function CheckoutBasket() {
     return (
         <>
             <aside
-                className={`flex h-full w-full translate-x-0 flex-col shadow-2xl transition-transform duration-300 ease-in-out`}
+                className={`flex h-full w-full translate-x-0 flex-col transition-transform duration-300 ease-in-out`}
                 aria-label="Shopping basket"
             >
                 <div className="flex items-center justify-between border-b border-stone-800 px-6 py-5">

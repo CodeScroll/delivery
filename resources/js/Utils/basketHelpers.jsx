@@ -26,7 +26,7 @@ export function calcItemCount(items) {
  * @param {string} currency
  * @returns {string}
  */
-export function formatCurrency(amount, currency = 'USD') {
+export function formatCurrency(amount, currency = 'EUR') {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
 }
 

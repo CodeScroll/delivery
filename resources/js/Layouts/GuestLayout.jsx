@@ -18,7 +18,7 @@ export default function GuestLayout({ children }) {
                             setCartOpen(true);
                         }}
                     />
-                    <div className="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:rounded-lg">{children}</div>
+                    <div className="w-full overflow-hidden bg-white px-6 py-4 shadow-md sm:rounded-lg">{children}</div>
                 </div>
                 <CookieConsent />
             </BasketProvider>

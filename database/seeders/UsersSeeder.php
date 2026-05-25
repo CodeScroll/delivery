@@ -31,8 +31,26 @@ class UsersSeeder extends Seeder
         ]);
 
         DB::table('users_roles')->insert([
-            'user_id' => 1,
+            'user_id' => 101,
             'role' => 'admin',
+            'created_at' => $now,
+            'updated_at' => $now
+        ]);
+
+        DB::table('users')->insert([
+            'unique_id' => General::generateUniqueId(User::class, 'unique_id', 4),
+            'name' => 'client',
+            'surname' => 'client1',
+            'email' => 'client@gmail.com',
+            'password' => Hash::make('password'),
+            'email_verified_at' => $now,
+            'created_at' => $now,
+            'updated_at' => $now
+        ]);
+
+        DB::table('users_roles')->insert([
+            'user_id' => 102,
+            'role' => 'client',
             'created_at' => $now,
             'updated_at' => $now
         ]);

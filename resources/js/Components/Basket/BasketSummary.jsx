@@ -36,9 +36,9 @@ export default function BasketSummary({ isCheckoutpage = false }) {
                     <span>{ti8c('shipping')}</span>
                     <span className="font-mono">{shipping === 0 ? <span className="text-emerald-400">Free</span> : formatCurrency(shipping)}</span>
                 </div>
-                <div className="flex justify-between border-t border-stone-700 pt-2 text-base font-bold text-stone-300">
+                <div className="flex justify-between border-t border-stone-700 pt-2 text-base font-bold">
                     <span>{ti8c('total')}</span>
-                    <span className="font-mono text-amber-400">{formatCurrency(grandTotal)}</span>
+                    <span className="font-mono text-amber-400 text-xl">{formatCurrency(grandTotal)}</span>
                 </div>
             </div>
 

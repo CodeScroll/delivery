@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [HomeController::class, 'indexPage']);
-Route::get('/checkout', [HomeController::class, 'checkoutPage']);
+Route::get('/', [HomeController::class, 'indexPage'])
+    ->name('home');
+
+Route::get('/checkout', [HomeController::class, 'checkoutPage'])
+    ->name('checkout');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -20,4 +21,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
