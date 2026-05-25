@@ -58,7 +58,7 @@ export default function DeliveryForm({ defaultCity = null }) {
 
         const params = {
             ...(value != null && { search: value }),
-            ...(targetCityId != null && { cityid: targetCityId }),
+            ...(targetCity?.id != null && { cityid: targetCity.id }),
             ...(selectedCategory?.id != null && { categoryid: selectedCategory.id }),
             ...(selectedCompany?.id != null && { companyid: selectedCompany.id }),
             ...(page != null && { page: page }),

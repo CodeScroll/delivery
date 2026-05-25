@@ -20,9 +20,9 @@ class ProductsBuilder
         }
 
         if ($request->has('cityid')) {
-            $products = Product::whereHas('cities', function ($q) use ($request) {
+            $productQuery->whereHas('cities', function ($q) use ($request) {
                 $q->where('city_id', $request->cityid);
-            })->get();
+            });
         }
 
         if ($request->has('search') && !empty($request->search)) {
