@@ -1,3 +1,5 @@
+import { fetchSource } from '@/api';
+import AddressCard from '@/Components/AddressCard';
 import CheckoutBasket from '@/Components/Basket/CheckoutBasket';
 import AccessModal from '@/Components/Modals/AccessModal';
 import PrimaryButton from '@/Components/PrimaryButton';
@@ -7,6 +9,7 @@ import { useEffect, useState } from 'react';
 
 export default function Checkout({}) {
     const [openAccessModal, setOpenAccessModal] = useState(false);
+    const [address, setAddress] = useState({});
     const [pageUrl, setPageUrl] = useState(null);
     const { auth } = usePage().props;
 
@@ -28,12 +31,25 @@ export default function Checkout({}) {
     useEffect(() => {
         if (auth && auth.user) {
             setOpenAccessModal(false);
+
+            fetchSource('/address/last')
+                .then((data) => {
+                    if (data) {
+                        setAddress(data);
+                    }
+                })
+                .catch(console.error);
         }
     }, [auth]);
     return (
         <>
             <AccessModal open={openAccessModal} onClose={() => setOpenAccessModal(false)} pageUrl={pageUrl}></AccessModal>
             <CheckoutBasket />
+            {address && (
+                <div className="space-y-3">
+                    <AddressCard key={address.id} addr={address} index={0} onDelete={() => {}} />
+                </div>
+            )}
             <div className="flex items-center justify-center p-6">
                 <PrimaryButton
                     onClick={handleOnOrder}

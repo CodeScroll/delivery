@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/addresses/get', [AddressController::class, 'get'])->name('addresses.get');
     Route::post('/addresses/store', [AddressController::class, 'store'])->name('addresses.store');
+    Route::get('/address/last', [AddressController::class, 'getLast'])->name('addresses.last');
 });
 
 require __DIR__ . '/auth.php';

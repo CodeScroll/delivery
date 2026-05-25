@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('address_street')->nullable();
             $table->smallInteger('floor')->nullable();
             $table->string('comments')->nullable();
-            $table->tinyInteger('lastused')->default(1);
+            $table->tinyInteger('lastused')->default(0);
             $table->tinyInteger('deleted')->default(0);
             $table->timestamps();
         });

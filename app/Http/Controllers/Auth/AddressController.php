@@ -28,4 +28,16 @@ class AddressController extends Controller
 
         return response()->json($address, 201);
     }
+
+    function getLast()
+    {
+        $user = Auth::user();
+        $address = $user->addresses()->where('lastused', 1)->first();
+        if (!$address) {
+            $address = $user->addresses()
+                ->orderBy('created_at', 'asc')
+                ->first();
+        }
+        return response()->json($address, 201);
+    }
 }
