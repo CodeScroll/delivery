@@ -1,18 +1,20 @@
 import { constTrans, fetchSource } from '@/api';
 import AddressCard from '@/Components/AddressCard';
 import CheckoutBasket from '@/Components/Basket/CheckoutBasket';
+import DatePickerCard from '@/Components/DatePickerCard';
 import AccessModal from '@/Components/Modals/AccessModal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { usePage, router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 
 export default function Checkout({}) {
     const [openAccessModal, setOpenAccessModal] = useState(false);
-    const [address, setAddress] = useState({});
+    const [address, setAddress] = useState(null);
     const [pageUrl, setPageUrl] = useState(null);
     const [selectAddressModal, setSelectAddressModal] = useState(false);
+    const [daySelected, setDaySelected] = useState(null);
     const { auth } = usePage().props;
 
     const transes = {
@@ -69,7 +71,7 @@ export default function Checkout({}) {
             <AccessModal open={openAccessModal} onClose={() => setOpenAccessModal(false)} pageUrl={pageUrl}></AccessModal>
             <CheckoutBasket />
             {address && (
-                <div className="m-auto w-full md:w-1/2">
+                <div className="m-auto w-full md:w-1/2 my-4">
                     <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
                         {ti8c('address')} ({constTrans(transes, 'lastusedcreated')})
                         <FaExchangeAlt className="cursor-pointer text-sm" onClick={selectingAddress} />
@@ -80,6 +82,13 @@ export default function Checkout({}) {
                     </div>
                 </div>
             )}
+
+            <div className="flex items-center justify-center bg-gray-50 p-6">
+                <div className="w-full max-w-md">
+                    <DatePickerCard setDaySelected={setDaySelected} />
+                </div>
+            </div>
+
             <div className="flex items-center justify-center p-6">
                 <PrimaryButton
                     onClick={handleOnOrder}
