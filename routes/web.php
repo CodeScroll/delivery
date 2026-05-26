@@ -4,8 +4,12 @@ use App\Http\Controllers\Auth\AddressController;
 use App\Http\Controllers\Auth\OrderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::get('/test', [TestController::class, 'index'])
+    ->name('test');
 
 Route::get('/', [HomeController::class, 'indexPage'])
     ->name('home');

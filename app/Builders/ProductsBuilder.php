@@ -19,10 +19,18 @@ class ProductsBuilder
             $productQuery->where('category_id', $request->categoryid);
         }
 
-        if ($request->has('cityid')) {
-            $productQuery->whereHas('cities', function ($q) use ($request) {
-                $q->where('city_id', $request->cityid);
-            });
+        // if ($request->has('cityid')) {
+        //     $productQuery->whereHas('cities', function ($q) use ($request) {
+        //         $q->where('city_id', $request->cityid);
+        //     });
+        // }
+
+        if ($request->has('companyid')) {
+
+            $productQuery = $productQuery->join('products_companies', 'products.id', '=', 'products_companies.product_id')
+                ->where('products_companies.company_id', $request->companyid)
+                ->where('products_companies.is_active', 1)
+                ->select('products.*', 'products_companies.*');
         }
 
         if ($request->has('search') && !empty($request->search)) {

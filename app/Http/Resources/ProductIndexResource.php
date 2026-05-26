@@ -21,6 +21,7 @@ class ProductIndexResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'estimated_price' => $this->estimated_price,
+            'price' => $this->company_id ? $this->price : null,
             'category' => $category ? $category : null,
         ];
     }
