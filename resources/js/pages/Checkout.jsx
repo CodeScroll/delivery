@@ -4,6 +4,7 @@ import CheckoutBasket from '@/Components/Basket/CheckoutBasket';
 import DatePickerCard from '@/Components/DatePickerCard';
 import AccessModal from '@/Components/Modals/AccessModal';
 import PrimaryButton from '@/Components/PrimaryButton';
+import TimeSelect from '@/Components/TimeSelect';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -14,12 +15,15 @@ export default function Checkout({}) {
     const [address, setAddress] = useState(null);
     const [pageUrl, setPageUrl] = useState(null);
     const [selectAddressModal, setSelectAddressModal] = useState(false);
-    const [daySelected, setDaySelected] = useState(null);
+    const [dateSelected, setDateSelected] = useState(null);
+    const [timeSelected, setTimeSelected] = useState('');
     const { auth } = usePage().props;
 
     const transes = {
         el: {
             lastusedcreated: 'Τελευταία χρησιμοποιημένη',
+            selecttime: 'Επιλογή ώρας',
+            selected: 'Επιλεγμένη',
         },
     };
 
@@ -34,10 +38,14 @@ export default function Checkout({}) {
         }
 
         try {
-            const response = await axios.post('/order/store', {
+            const params = {
                 address: address.id,
                 type: 'delivery',
-            });
+                ...(dateSelected && { order_date: dateSelected }),
+                ...(timeSelected && { order_time: timeSelected }),
+            };
+
+            const response = await axios.post('/order/store', params);
 
             if (response.status === 200 && response.data.status) {
                 router.visit(response.data.redirecturl);
@@ -71,7 +79,7 @@ export default function Checkout({}) {
             <AccessModal open={openAccessModal} onClose={() => setOpenAccessModal(false)} pageUrl={pageUrl}></AccessModal>
             <CheckoutBasket />
             {address && (
-                <div className="m-auto w-full md:w-1/2 my-4">
+                <div className="m-auto my-4 w-full md:w-1/2">
                     <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
                         {ti8c('address')} ({constTrans(transes, 'lastusedcreated')})
                         <FaExchangeAlt className="cursor-pointer text-sm" onClick={selectingAddress} />
@@ -83,9 +91,14 @@ export default function Checkout({}) {
                 </div>
             )}
 
-            <div className="flex items-center justify-center bg-gray-50 p-6">
-                <div className="w-full max-w-md">
-                    <DatePickerCard setDaySelected={setDaySelected} />
+            <div className="flex flex-col items-center justify-center gap-6 bg-gray-50 p-6 md:flex-row">
+                <div className="mx-auto w-full max-w-md">
+                    <DatePickerCard setDateSelected={setDateSelected} />
+                </div>
+
+                <div className="mx-auto w-full max-w-md space-y-4 rounded-2xl bg-white p-6 shadow-md">
+                    <label className="block text-sm font-medium text-gray-700">{constTrans(transes, 'selecttime')}</label>
+                    <TimeSelect value={timeSelected} onChange={setTimeSelected} />
                 </div>
             </div>
 

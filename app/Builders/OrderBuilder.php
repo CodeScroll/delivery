@@ -11,6 +11,8 @@ class OrderBuilder
     protected object $user;
     protected object $address;
     protected object $order;
+    protected ?string $orderDate = null;
+    protected ?string $orderTime = null;
     protected string $type;
 
     function __construct()
@@ -25,6 +27,8 @@ class OrderBuilder
         $redirectUrl = null;
 
         $this->type = $request->type;
+        $this->orderDate = $request->order_date ?? null;
+        $this->orderTime = $request->order_time ?? null;
         $this->address = $this->user->addresses()->where('id', $request->address)->first();
         $this->order = $this->insertOrder();
 
@@ -47,6 +51,8 @@ class OrderBuilder
         $order->user_id = $this->user->id;
         $order->address_id = $this->address->id;
         $order->type = $this->type;
+        $order->order_date = $this->orderDate;
+        $order->order_time = $this->orderTime;
         $order->save();
         return $order;
     }

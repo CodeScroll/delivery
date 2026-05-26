@@ -5,9 +5,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function DatePickerCard({ setDaySelected }) {
+export default function DatePickerCard({ setDateSelected }) {
     dayjs.extend(utc);
     dayjs.extend(timezone);
 
@@ -17,13 +17,13 @@ export default function DatePickerCard({ setDaySelected }) {
     const handleDayToday = () => {
         const today = dayjs().tz('Europe/Athens');
         setValue(today);
-        setDaySelected(today.format('YYYY-MM-DD'));
+        setDateSelected(today.format('YYYY-MM-DD'));
     };
 
     const handleDateChange = (newValue) => {
         setValue(newValue);
         const mysqlDateTime = newValue?.tz('Europe/Athens').format('YYYY-MM-DD');
-        setDaySelected(mysqlDateTime);
+        setDateSelected(mysqlDateTime);
     };
 
     const transes = {
@@ -33,8 +33,13 @@ export default function DatePickerCard({ setDaySelected }) {
         },
     };
 
+    useEffect(() => {
+
+        handleDayToday(); //init to today
+    }, []);
+
     return (
-        <div className="mx-auto max-w-sm space-y-4 rounded-2xl bg-white p-4 shadow-md">
+        <div className="mx-auto space-y-4 rounded-2xl bg-white p-4 shadow-md">
             <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-gray-800">{constTrans(transes, 'chooseday')}</h2>
                 <button onClick={handleDayToday} className="rounded-lg bg-blue-500 px-3 py-1 text-sm text-white transition hover:bg-blue-600">

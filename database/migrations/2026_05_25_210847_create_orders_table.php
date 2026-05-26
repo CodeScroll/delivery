@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('address_id')->constrained('users_addresses')->cascadeOnDelete();
             $table->string('status')->default('pending');
             $table->string('type')->default('delivery'); //delivery, ship, pickup, order
+            $table->date('order_date')->nullable();
+            $table->time('order_time')->nullable();
             $table->timestamps();
         });
     }
