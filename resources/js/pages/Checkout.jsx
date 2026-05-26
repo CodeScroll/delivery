@@ -4,27 +4,44 @@ import CheckoutBasket from '@/Components/Basket/CheckoutBasket';
 import AccessModal from '@/Components/Modals/AccessModal';
 import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { usePage } from '@inertiajs/react';
+import { usePage, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { FaExchangeAlt } from 'react-icons/fa';
 
 export default function Checkout({}) {
     const [openAccessModal, setOpenAccessModal] = useState(false);
     const [address, setAddress] = useState({});
     const [pageUrl, setPageUrl] = useState(null);
+    const [selectAddressModal, setSelectAddressModal] = useState(false);
     const { auth } = usePage().props;
 
     const transes = {
         el: {
-            lastusedcreated: 'Τελευταία χρησιμοποιημένη / δημιουργημένη',
+            lastusedcreated: 'Τελευταία χρησιμοποιημένη',
         },
     };
 
-    const handleOnOrder = () => {
-        // your order logic here
-        console.log('Order placed!');
+    const selectingAddress = () => {
+        setSelectAddressModal(true);
+    };
 
+    const handleOnOrder = async () => {
         if (auth && !auth.user) {
             setOpenAccessModal(true);
+            return false;
+        }
+
+        try {
+            const response = await axios.post('/order/store', {
+                address: address.id,
+                type: 'delivery',
+            });
+
+            if (response.status === 200 && response.data.status) {
+                router.visit(response.data.redirecturl);
+            }
+        } catch (error) {
+            console.error('Error:', error.response?.data || error.message);
         }
     };
 
@@ -53,8 +70,9 @@ export default function Checkout({}) {
             <CheckoutBasket />
             {address && (
                 <div className="m-auto w-full md:w-1/2">
-                    <h2 className="mb-3 text-sm font-semibold text-slate-700">
+                    <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
                         {ti8c('address')} ({constTrans(transes, 'lastusedcreated')})
+                        <FaExchangeAlt className="cursor-pointer text-sm" onClick={selectingAddress} />
                     </h2>
 
                     <div className="space-y-3">
