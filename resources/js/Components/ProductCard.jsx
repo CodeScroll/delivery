@@ -1,10 +1,18 @@
+import { formatCurrency } from '@/Utils/basketHelpers';
 import { useState } from 'react';
 import AddToBasketButton from './Basket/AddToBasketButton';
+import { constTrans } from '@/api';
 
 export default function ProductCard({ product, showSlug = false, onSelect = null, addToBasketBtn = false }) {
     const [hovered, setHovered] = useState(false);
 
     const { category, name, slug, price, estimated_price } = product;
+
+    const transes = {
+        el: {
+            priceunuvailable: 'Τιμή μη διαθέσιμη',
+        },
+    };
 
     return (
         <div
@@ -32,16 +40,16 @@ export default function ProductCard({ product, showSlug = false, onSelect = null
                 <div className="flex items-end gap-2">
                     {price != null ? (
                         <>
-                            <span className="text-2xl font-extrabold leading-none text-zinc-900">${Number(price).toFixed(2)}</span>
-                            <span className="mb-0.5 text-xs font-medium text-zinc-400">exact price</span>
+                            <span className="text-2xl font-extrabold leading-none text-zinc-900">{formatCurrency(price)}</span>
+                            <span className="mb-0.5 text-xs font-medium text-zinc-400">{ti8c('price')}</span>
                         </>
                     ) : estimated_price != null ? (
                         <>
-                            <span className="text-2xl font-extrabold leading-none text-zinc-500">~${Number(estimated_price).toFixed(2)}</span>
-                            <span className="mb-0.5 text-xs font-medium text-zinc-400">estimated</span>
+                            <span className="text-2xl font-extrabold leading-none text-zinc-500">~{formatCurrency(estimated_price)}</span>
+                            <span className="mb-0.5 text-xs font-medium text-zinc-400">{ti8c('estimatedprice')}</span>
                         </>
                     ) : (
-                        <span className="text-sm italic text-zinc-400">Price unavailable</span>
+                        <span className="text-sm italic text-zinc-400">{constTrans(transes, 'priceunuvailable')}</span>
                     )}
                 </div>
             </div>
