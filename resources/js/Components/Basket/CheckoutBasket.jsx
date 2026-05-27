@@ -1,7 +1,7 @@
 import { constTrans } from '@/api';
 import { useBasket } from '@/Providers/BasketProvider';
-import BasketItem from './BasketItem';
 import BasketSummary from './BasketSummary';
+import CheckoutCompanyItems from './CheckoutCompanyItems';
 
 export default function CheckoutBasket() {
     const { items, updateQuantity, removeFromBasket } = useBasket();
@@ -68,26 +68,7 @@ export default function CheckoutBasket() {
                                 }, {}),
                             ).map(([companyId, companyItems], groupIndex) => (
                                 <div key={companyId} className="mb-4">
-                                    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                                        {/* Company header (optional but useful) */}
-                                        <div className="mb-3 text-sm font-semibold text-gray-600">
-                                            Company: {companyItems[0]?.company_name ?? `#${companyId}`}
-                                        </div>
-
-                                        {companyItems.map((item) => (
-                                            <BasketItem key={item.id} item={item} />
-                                        ))}
-                                    </div>
-
-                                    {/* optional separator between company boxes */}
-                                    {groupIndex <
-                                        Object.keys(
-                                            items.reduce((acc, item) => {
-                                                acc[item.company_id] = true;
-                                                return acc;
-                                            }, {}),
-                                        ).length -
-                                            1 && <div className="my-4 border-t border-gray-200" />}
+                                    <CheckoutCompanyItems companyId={companyId} companyItems={companyItems} />
                                 </div>
                             ))}
                         </div>
