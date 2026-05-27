@@ -29,10 +29,7 @@ export default function CheckoutBasket() {
 
     return (
         <>
-            <aside
-                className={`flex h-full w-full translate-x-0 flex-col transition-transform duration-300 ease-in-out`}
-                aria-label="Shopping basket"
-            >
+            <aside className={`flex h-full w-full translate-x-0 flex-col transition-transform duration-300 ease-in-out`} aria-label="Shopping basket">
                 <div className="flex items-center justify-between border-b border-stone-800 px-6 py-5">
                     <div className="flex items-center gap-3">
                         <svg className="h-5 w-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,7 +49,7 @@ export default function CheckoutBasket() {
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-6 my-4">
+                <div className="my-4 flex-1 overflow-y-auto px-6">
                     {items.length === 0 ? (
                         <div className="flex h-full flex-col items-center justify-center gap-4 pb-16 text-center">
                             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-stone-800 text-4xl">🛍️</div>
@@ -60,8 +57,38 @@ export default function CheckoutBasket() {
                         </div>
                     ) : (
                         <div>
-                            {items.map((item) => (
-                                <BasketItem key={item.id} item={item} />
+                            {Object.entries(
+                                items.reduce((acc, item) => {
+                                    if (!acc[item.company_id]) {
+                                        acc[item.company_id] = [];
+                                    }
+
+                                    acc[item.company_id].push(item);
+                                    return acc;
+                                }, {}),
+                            ).map(([companyId, companyItems], groupIndex) => (
+                                <div key={companyId} className="mb-4">
+                                    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+                                        {/* Company header (optional but useful) */}
+                                        <div className="mb-3 text-sm font-semibold text-gray-600">
+                                            Company: {companyItems[0]?.company_name ?? `#${companyId}`}
+                                        </div>
+
+                                        {companyItems.map((item) => (
+                                            <BasketItem key={item.id} item={item} />
+                                        ))}
+                                    </div>
+
+                                    {/* optional separator between company boxes */}
+                                    {groupIndex <
+                                        Object.keys(
+                                            items.reduce((acc, item) => {
+                                                acc[item.company_id] = true;
+                                                return acc;
+                                            }, {}),
+                                        ).length -
+                                            1 && <div className="my-4 border-t border-gray-200" />}
+                                </div>
                             ))}
                         </div>
                     )}

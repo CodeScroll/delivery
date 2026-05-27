@@ -9,6 +9,11 @@ class ProductCompany extends Model
 {
     protected $table = 'products_companies';
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');

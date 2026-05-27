@@ -105,7 +105,7 @@ export default function Checkout({}) {
             <div className="flex items-center justify-center p-6">
                 <PrimaryButton
                     onClick={handleOnOrder}
-                    className="!bg-green-600 px-8 py-4 text-sm hover:!bg-green-500 focus:!bg-green-500 focus:!ring-green-500 active:!bg-green-700"
+                    className="rounded-xl bg-green-600 px-10 py-4 text-sm font-semibold text-white shadow-md shadow-green-600/30 transition-all duration-200 ease-in-out hover:bg-green-500 hover:shadow-lg hover:shadow-green-500/40 focus:outline-none focus:ring-4 focus:ring-green-400/40 active:scale-[0.98] active:bg-green-700"
                 >
                     {ti8c('order')}
                 </PrimaryButton>

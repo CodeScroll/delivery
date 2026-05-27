@@ -53,16 +53,15 @@ function CartItem({ item, onRemove, onQtyChange }) {
                         onIncrease={() => onQtyChange(item.id, item.quantity + 1)}
                     />
                     <span className="text-[13px] font-medium tabular-nums text-stone-800">
-                        {item.estimated_price && (
-                            <div className="flex flex-col">
-                                <span>~ {fmt(item.estimated_price * item.quantity)}</span>
-                            </div>
-                        )}
-                        {item.price && (
+                        {item.price ? (
                             <div className="flex flex-col">
                                 <span>{fmt(item.price * item.quantity)}</span>
                             </div>
-                        )}
+                        ) : item.estimated_price ? (
+                            <div className="flex flex-col">
+                                <span>~ {fmt(item.estimated_price * item.quantity)}</span>
+                            </div>
+                        ) : null}
                     </span>
                 </div>
             </div>

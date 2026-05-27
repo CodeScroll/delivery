@@ -27,10 +27,18 @@ class ProductsBuilder
 
         if ($request->has('companyid')) {
 
-            $productQuery = $productQuery->join('products_companies', 'products.id', '=', 'products_companies.product_id')
+            $productQuery = $productQuery
+                ->join('products_companies', 'products.id', '=', 'products_companies.product_id')
+                ->join('companies', 'companies.id', '=', 'products_companies.company_id')
                 ->where('products_companies.company_id', $request->companyid)
                 ->where('products_companies.is_active', 1)
-                ->select('products.*', 'products_companies.*');
+                ->select(
+                    'products.*',
+                    'products_companies.price as price',
+                    'companies.id as company_id',
+                    'companies.name as company_name',
+                    'companies.slug as company_slug'
+                );
         }
 
         if ($request->has('search') && !empty($request->search)) {
@@ -43,6 +51,7 @@ class ProductsBuilder
         }
 
         $products = $productQuery->paginate(env('PRODUCTSINDEXLIMIT'));
+
         if ($products->count() > 0) {
             $status = true;
         }
