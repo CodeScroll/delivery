@@ -58,7 +58,7 @@ export default function CompaniesModal({ selectedCity = null, companySelectModal
                 }}
                 maxWidth="7xl"
             >
-                <div className="space-y-4 p-4">
+                <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
                     {companiesList.length > 0 ? (
                         companiesList.map((company) => <CompanyCard key={company.id} company={company} onClick={onClick} />)
                     ) : (
