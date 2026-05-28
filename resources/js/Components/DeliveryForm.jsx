@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { FaExchangeAlt } from 'react-icons/fa';
 import CitiesList from './CitiesList';
 import CompanyCard from './CompanyCard';
-import LoadMoreProductsButton from './LoadMoreProductsButton';
+import LoadMoreButton from './LoadMoreButton';
 import Modal from './Modal';
 import CompaniesModal from './Modals/CompaniesModal';
 import ProductCard from './ProductCard';
@@ -287,7 +287,7 @@ export default function DeliveryForm({ defaultCity = null }) {
                 </div>
                 {productsLoadMore && (
                     <div className="my-3">
-                        <LoadMoreProductsButton onClick={handleLoadMoreProduct} loading={loading} />
+                        <LoadMoreButton onClick={handleLoadMoreProduct} loading={loading} />
                     </div>
                 )}
             </div>

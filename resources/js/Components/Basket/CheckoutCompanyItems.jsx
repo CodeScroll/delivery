@@ -52,6 +52,8 @@ export default function CheckoutCompanyItems({ companyId, companyItems }) {
                         <WorkingHours schedule={workingHours} />
                     </div>
                 )}
+
+                {company &&(<><div className='my-4'>{ti8c('company')} {company.name}</div></>)}
             </div>
         </>
     );

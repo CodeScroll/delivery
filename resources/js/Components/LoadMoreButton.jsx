@@ -1,4 +1,4 @@
-export default function LoadMoreProductsButton({ onClick, loading = false }) {
+export default function LoadMoreButton({ onClick, loading = false }) {
     return (
         <button
             onClick={onClick}
