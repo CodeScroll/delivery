@@ -1,12 +1,14 @@
 import { fetchSource } from '@/api';
 import { useEffect, useState } from 'react';
 import WorkingHours from '../Company/WorkingHours';
+import CompanyCard from '../CompanyCard';
 import BasketItem from './BasketItem';
 
 export default function CheckoutCompanyItems({ companyId, companyItems }) {
     const [company, setCompany] = useState(null);
     const [workingHours, setWorkingHours] = useState([]);
 
+    const basicDivClass = 'my-4 rounded-xl border p-4 shadow-sm';
     useEffect(() => {
         const params = new URLSearchParams({
             id: companyId,
@@ -31,18 +33,21 @@ export default function CheckoutCompanyItems({ companyId, companyItems }) {
             <div className="rounded-xl border border-gray-300 bg-white p-5 shadow-md ring-1 ring-gray-200">
                 {company && (
                     <>
-                        <div className="mb-3 text-sm font-semibold text-gray-600">
-                            {ti8c('company')}: {company.name}
-                        </div>
+                        <CompanyCard company={company} onClick={() => {}} />
                     </>
                 )}
 
-                {companyItems.map((item) => (
-                    <BasketItem key={item.id} item={item} />
-                ))}
+                <div className={basicDivClass}>
+                    <div className="mb-3 text-sm font-medium text-gray-500">{ti8c('products')}</div>
+                    {companyItems.map((item) => (
+                        <>
+                            <BasketItem key={item.id} item={item} />
+                        </>
+                    ))}
+                </div>
 
                 {workingHours.length > 0 && (
-                    <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4">
+                    <div className={basicDivClass}>
                         <p className="mb-3 text-sm font-medium text-gray-500">{ti8c('workinghours')}</p>
                         <WorkingHours schedule={workingHours} />
                     </div>

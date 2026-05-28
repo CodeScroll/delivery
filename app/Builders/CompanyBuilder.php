@@ -2,6 +2,7 @@
 
 namespace App\Builders;
 
+use App\Http\Resources\CompanyIndexResource;
 use App\Services\CacheManager;
 use Illuminate\Support\Facades\Lang;
 
@@ -28,7 +29,7 @@ class CompanyBuilder
         return [
             'status' => $status,
             'msg' => $msg,
-            'company' => $company,
+            'company' => new CompanyIndexResource($company),
             'workinghours' => $this->workingHours,
         ];
     }

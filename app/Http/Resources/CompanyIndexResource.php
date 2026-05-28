@@ -16,6 +16,7 @@ class CompanyIndexResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'unique_id' => $this->unique_id,
             'name' => $this->name,
             'slug' => $this->slug,
             'fulladdress' => $this->fullAddress(),
