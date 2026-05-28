@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Builders\CompanyBuilder;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CompanyIndexResource;
 use App\Models\City;
@@ -12,6 +13,11 @@ class CompanyController extends Controller
 {
     public function get(Request $request)
     {
+        if ($request->has('id')) {
+            $companyBuilder = new CompanyBuilder($request);
+            return response()->json($companyBuilder->getById($request->id));
+        }
+
         $companyQuery = Company::query();
 
         if ($request->has('cityid')) {

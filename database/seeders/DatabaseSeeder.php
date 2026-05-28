@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
                 ProductsSeeder::class,
                 CompanyProductsSeeder::class,
                 ProductCitySeeder::class,
+                CompanyWorkingHoursSeeder::class,
             ]);
         } else {
 
